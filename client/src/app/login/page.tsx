@@ -34,7 +34,11 @@ const formSchema = z.object({
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/, "Password must contain at least one uppercase letter, one lowercase letter, one number and a special character.")
 })
 
-export default function Login() {
+interface LoginProps {
+  signInWithGoogle: () => Promise<void>;
+}
+
+export default function Login(signInWithGoogle: LoginProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -100,9 +104,15 @@ export default function Login() {
             </Form>
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full" style={{background: "#FF678B"}} onClick={form.handleSubmit(onSubmit)}>Submit</Button>
+            <Button type="submit" className="w-full" style={{background: "#FF678B"}} onClick={form.handleSubmit(onSubmit)}>Iniciar sesión</Button>
           </CardFooter>
         </Card>
+        <Button className="my-5 py-6 w-3/5 font-bold" style={{background: "#FF678B"}} onClick={() => {
+          console.log("Google sign in")
+          signInWithGoogle()
+        }}>
+          Continuar con Google
+        </Button>
       </div>
     </div>
   )

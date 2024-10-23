@@ -1,28 +1,46 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+'use client';
+
+import React from "react";
 import appFirebase from "../../../config";
-import { getAuth, GoogleAuthProvider, signInWithPopup, User as FirebaseUser } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, User as FirebaseUser, signOut } from "firebase/auth";
+import { useRouter } from "next/navigation";
 
 // Define the UserContext type
 interface UserContextType {
   user: FirebaseUser | null;  // Firebase's User type or null
   signInWithGoogle: () => Promise<void>; // Function to sign in
+  handleLogout: () => Promise<void>; // Function to sign out
 }
 
 // Create the UserContext
-const UserContext = createContext<UserContextType | undefined>(undefined);
+const UserContext = React.createContext<UserContextType | undefined>(undefined);
 
 // Create a provider to wrap your app
-export function UserProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<FirebaseUser | null>(null);
+export function UserProvider({ children }: { children: React.ReactNode }) {
+  const auth = getAuth(appFirebase);
+  const router = useRouter();
+  const [user, setUser] = React.useState<FirebaseUser | null>(null);
 
-  useEffect(() => {
-    const auth = getAuth(appFirebase);
+  React.useEffect(() => {
     const unsuscribe = auth.onAuthStateChanged((user) => {
-      setUser(user ? user : null);
+      if (user) {
+        setUser(user);
+      } else {
+        router.push("/login");
+      }
     });
 
     return () => unsuscribe();
-  }, []);
+  }, [auth, router]);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.push("/login");
+    } catch (error) {
+      console.error("Error signing out", error);
+    }
+  }
 
   const signInWithGoogle = async () => {
     const auth = getAuth(appFirebase);
@@ -35,7 +53,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <UserContext.Provider value={{ user, signInWithGoogle }}>
+    <UserContext.Provider value={{ user, signInWithGoogle, handleLogout }}>
       {children}
     </UserContext.Provider>
   );
@@ -43,7 +61,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
 
 // Custom hook to use the UserContext
 export const useUser = (): UserContextType => {
-  const context = useContext(UserContext);
+  const context = React.useContext(UserContext);
   if (!context) {
     throw new Error("useUser must be used within a UserProvider");
   }
