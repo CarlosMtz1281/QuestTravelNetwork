@@ -48,16 +48,16 @@ export default function Login() {
   }
 
   return (
-    <div className="container flex items-center justify-center">
+    <div className="flex items-center justify-center w-full">
       <div className="container">
-        <img className="h-dvh" src="/naturaleza.png" alt="Cordillera boscosa con un cielo semi despejado"/>
+        <img className="h-dvh" src="/mapImage.jpg" alt="Cordillera boscosa con un cielo semi despejado"/>
       </div>
-      <div className="w-1/2">
+      <div className="flex flex-col items-center w-3/4">
         <div className="flex items-end justify-center">
           <h1 className="text-7xl font-semibold p-5" style={{color: "#FF678B"}}>QUEST</h1>
           <Image className="py-5" src="/logo.png" alt="Planeta con signo de ubicación" width={200} height={200}/>
         </div>
-        <Card>
+        <Card className="w-2/3">
           <CardHeader>
             <CardTitle>Login</CardTitle>
           </CardHeader>
