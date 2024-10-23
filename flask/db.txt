@@ -1,0 +1,31 @@
+users
+    -userKey: string
+    -email: string
+    -password: string
+    -age: int
+    -name: string
+    -lastName: string
+    -nacionality: string
+
+posts
+    -userKey: string
+    -description: string
+    -likes> int
+    -date: string
+    -location: string
+    -category: 
+    -comments[
+        {
+            id: 
+            authorKey: string
+            comment: string
+            likes: int
+        }
+    ]  
+
+plans
+    -authorKey: string
+    -name: string
+    -dates: string
+    -plan: string
+
