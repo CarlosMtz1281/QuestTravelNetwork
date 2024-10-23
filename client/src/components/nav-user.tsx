@@ -36,6 +36,7 @@ import {
 	useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const data = {
 	user: {
@@ -58,7 +59,7 @@ const data = {
 		},
 		{
 			title: "Plans",
-			url: "#",
+			url: "dashboard/my-plans",
 			icon: TicketsPlane,
 			isActive: false,
 		},
@@ -102,19 +103,22 @@ function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 						<SidebarMenu>
 							{data.navMain.map((item) => (
 								<SidebarMenuItem key={item.title}>
-									<SidebarMenuButton
-										tooltip={{
-											children: item.title,
-											hidden: false,
-										}}
-										onClick={() => {
-											setActiveItem(item);
-										}}
-										isActive={activeItem.title === item.title}
-										className={cn("px-2 data-[active=true]:bg-red-100")}
-									>
-										<item.icon />
-									</SidebarMenuButton>
+									<Link href={item.url}>
+										<SidebarMenuButton
+											tooltip={{
+												children: item.title,
+												hidden: false,
+											}}
+											onClick={() => {
+												setActiveItem(item);
+											}}
+											isActive={activeItem.title === item.title}
+											className={cn("px-2 data-[active=true]:bg-red-100")}
+										>
+											<item.icon />
+										</SidebarMenuButton>
+									</Link>
+									
 								</SidebarMenuItem>
 							))}
 						</SidebarMenu>
