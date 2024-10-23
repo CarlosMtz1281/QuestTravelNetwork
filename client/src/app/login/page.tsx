@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 import {
   Form,
   FormControl,
@@ -13,6 +14,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 
 const formSchema = z.object({
@@ -40,48 +48,61 @@ export default function Login() {
   }
 
   return (
-    <div className="divide-y">
-      <div>
-        <h1>Hello</h1>
+    <div className="container flex items-center justify-center">
+      <div className="container">
+        <img className="h-dvh" src="/naturaleza.png" alt="Cordillera boscosa con un cielo semi despejado"/>
       </div>
-      <div>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Traveler" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Accesss password.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Submit</Button>
-          </form>
-        </Form>
+      <div className="w-1/2">
+        <div className="flex items-end justify-center">
+          <h1 className="text-7xl font-semibold p-5" style={{color: "#FF678B"}}>QUEST</h1>
+          <Image className="py-5" src="/logo.png" alt="Planeta con signo de ubicación" width={200} height={200}/>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Login</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Username</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Traveler" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Correo electronico con el que se registro.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contraseña</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Contraseña de acceso.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
+          </CardContent>
+          <CardFooter>
+            <Button type="submit" className="w-full" style={{background: "#FF678B"}} onClick={form.handleSubmit(onSubmit)}>Submit</Button>
+          </CardFooter>
+        </Card>
       </div>
     </div>
   )
