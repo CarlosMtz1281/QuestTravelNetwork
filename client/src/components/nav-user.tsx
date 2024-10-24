@@ -60,7 +60,7 @@ const data = {
     },
     {
       title: "Plans",
-      url: "dashboard/my-plans",
+      url: "my-plans",
       icon: TicketsPlane,
       isActive: false,
     },
