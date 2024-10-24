@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { v4 as uuidv4 } from "uuid"; // Import the uuid function
 
-const url = "http://localhost:5001/getMyPlans";
+const url = "http://localhost:5002/getMyPlans";
 
 export interface Plan {
   authorKey: string;
@@ -89,7 +89,10 @@ const MyPlans = () => {
       {/* Trip Details */}
       <div className="details">
         {selectedPlan && selectedPlan.plan && (
-          <ReactMarkdown className="markdown-content" remarkPlugins={[remarkGfm]}>
+          <ReactMarkdown
+            className="markdown-content"
+            remarkPlugins={[remarkGfm]}
+          >
             {formatPlan(selectedPlan.plan)}
           </ReactMarkdown>
         )}
