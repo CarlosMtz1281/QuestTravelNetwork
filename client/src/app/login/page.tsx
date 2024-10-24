@@ -22,6 +22,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { useUser } from "../contexts/userContext"
 
 const formSchema = z.object({
   username: 
@@ -34,11 +35,9 @@ const formSchema = z.object({
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/, "Password must contain at least one uppercase letter, one lowercase letter, one number and a special character.")
 })
 
-interface LoginProps {
-  signInWithGoogle: () => Promise<void>;
-}
+export default function Login() {
+  const { signInWithGoogle } = useUser();
 
-export default function Login(signInWithGoogle: LoginProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -108,8 +107,7 @@ export default function Login(signInWithGoogle: LoginProps) {
           </CardFooter>
         </Card>
         <Button className="my-5 py-6 w-3/5 font-bold" style={{background: "#FF678B"}} onClick={() => {
-          console.log("Google sign in")
-          signInWithGoogle()
+          signInWithGoogle();
         }}>
           Continuar con Google
         </Button>

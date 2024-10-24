@@ -1,8 +1,8 @@
 'use client';
 
 import React from "react";
-import appFirebase from "../../../config";
-import { getAuth, GoogleAuthProvider, signInWithPopup, User as FirebaseUser, signOut } from "firebase/auth";
+import auth from "../../../firebase/config";
+import { GoogleAuthProvider, signInWithPopup, User as FirebaseUser, signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
 // Define the UserContext type
@@ -17,7 +17,6 @@ const UserContext = React.createContext<UserContextType | undefined>(undefined);
 
 // Create a provider to wrap your app
 export function UserProvider({ children }: { children: React.ReactNode }) {
-  const auth = getAuth(appFirebase);
   const router = useRouter();
   const [user, setUser] = React.useState<FirebaseUser | null>(null);
 
@@ -31,7 +30,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     });
 
     return () => unsuscribe();
-  }, [auth, router]);
+  }, [router]);
 
   const handleLogout = async () => {
     try {
@@ -43,8 +42,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signInWithGoogle = async () => {
-    const auth = getAuth(appFirebase);
     const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
     try {
       await signInWithPopup(auth, provider);
     } catch (error) {
