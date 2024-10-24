@@ -1,6 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
+flask/node_modules
 /node_modules
 /.pnp
 .pnp.*
@@ -31,6 +32,8 @@ yarn-error.log*
 
 # env files (can opt-in for commiting if needed)
 .env*
+/flase/key.json
+/flask/env
 
 # vercel
 .vercel
