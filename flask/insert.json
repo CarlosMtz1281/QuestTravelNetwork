@@ -1,0 +1,191 @@
+{
+    "users": [
+      {
+        "userKey": "user001",
+        "email": "john.doe@example.com",
+        "password": "password123",
+        "age": 30,
+        "name": "John",
+        "lastName": "Doe",
+        "nacionality": "American"
+      },
+      {
+        "userKey": "user002",
+        "email": "jane.smith@example.com",
+        "password": "mypassword",
+        "age": 25,
+        "name": "Jane",
+        "lastName": "Smith",
+        "nacionality": "British"
+      },
+      {
+        "userKey": "user003",
+        "email": "carlos.martinez@example.com",
+        "password": "securepass",
+        "age": 27,
+        "name": "Carlos",
+        "lastName": "Martinez",
+        "nacionality": "Mexican"
+      },
+      {
+        "userKey": "user004",
+        "email": "emma.wilson@example.com",
+        "password": "password456",
+        "age": 22,
+        "name": "Emma",
+        "lastName": "Wilson",
+        "nacionality": "Canadian"
+      }
+    ],
+    "posts": [
+      {
+        "userKey": "user001",
+        "description": "Loving the view from this mountain!",
+        "likes": 120,
+        "date": "2024-10-01",
+        "location": "Rocky Mountains",
+        "category": "Travel",
+        "comments": [
+          {
+            "id": 1,
+            "authorKey": "user002",
+            "comment": "Amazing view!",
+            "likes": 10
+          },
+          {
+            "id": 2,
+            "authorKey": "user003",
+            "comment": "Wish I was there!",
+            "likes": 8
+          }
+        ]
+      },
+      {
+        "userKey": "user002",
+        "description": "Just finished my latest painting!",
+        "likes": 85,
+        "date": "2024-10-03",
+        "location": "London",
+        "category": "Art",
+        "comments": [
+          {
+            "id": 1,
+            "authorKey": "user004",
+            "comment": "Beautiful work!",
+            "likes": 12
+          }
+        ]
+      },
+      {
+        "userKey": "user003",
+        "description": "Attending a tech conference in Silicon Valley.",
+        "likes": 110,
+        "date": "2024-10-05",
+        "location": "San Francisco",
+        "category": "Tech",
+        "comments": [
+          {
+            "id": 1,
+            "authorKey": "user001",
+            "comment": "Tell me more about the event!",
+            "likes": 5
+          }
+        ]
+      },
+      {
+        "userKey": "user004",
+        "description": "Running my first marathon!",
+        "likes": 150,
+        "date": "2024-10-10",
+        "location": "Toronto",
+        "category": "Sports",
+        "comments": []
+      },
+      {
+        "userKey": "user001",
+        "description": "Amazing sunset at the beach.",
+        "likes": 90,
+        "date": "2024-10-12",
+        "location": "California",
+        "category": "Travel",
+        "comments": []
+      },
+      {
+        "userKey": "user002",
+        "description": "Cooking a new recipe tonight.",
+        "likes": 60,
+        "date": "2024-10-13",
+        "location": "London",
+        "category": "Food",
+        "comments": []
+      },
+      {
+        "userKey": "user003",
+        "description": "Exploring the local culture in Mexico City.",
+        "likes": 130,
+        "date": "2024-10-14",
+        "location": "Mexico City",
+        "category": "Travel",
+        "comments": []
+      },
+      {
+        "userKey": "user004",
+        "description": "Visited Niagara Falls today!",
+        "likes": 200,
+        "date": "2024-10-15",
+        "location": "Niagara Falls",
+        "category": "Travel",
+        "comments": []
+      },
+      {
+        "userKey": "user001",
+        "description": "Just launched my first app!",
+        "likes": 180,
+        "date": "2024-10-16",
+        "location": "San Francisco",
+        "category": "Tech",
+        "comments": []
+      },
+      {
+        "userKey": "user002",
+        "description": "Starting a new fitness routine.",
+        "likes": 100,
+        "date": "2024-10-17",
+        "location": "London",
+        "category": "Fitness",
+        "comments": []
+      }
+    ],
+    "plans": [
+      {
+        "authorKey": "user001",
+        "name": "Hiking Trip",
+        "dates": "2024-11-01 to 2024-11-05",
+        "plan": "We will be hiking through the Appalachian Trail."
+      },
+      {
+        "authorKey": "user002",
+        "name": "Art Exhibition Tour",
+        "dates": "2024-11-10",
+        "plan": "Visiting the latest art exhibitions in London."
+      },
+      {
+        "authorKey": "user003",
+        "name": "Tech Meetup",
+        "dates": "2024-11-15",
+        "plan": "Attending a tech meetup in Silicon Valley to network and learn."
+      },
+      {
+        "authorKey": "user004",
+        "name": "Marathon Training",
+        "dates": "2024-11-20 to 2024-12-01",
+        "plan": "Join my marathon training sessions."
+      },
+      {
+        "authorKey": "user001",
+        "name": "Beach Cleanup",
+        "dates": "2024-11-25",
+        "plan": "Organizing a beach cleanup event in California."
+      }
+    ]
+  }
