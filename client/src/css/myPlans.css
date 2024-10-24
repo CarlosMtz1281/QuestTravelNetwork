@@ -1,0 +1,125 @@
+/* Container for sidebar and details */
+.container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 30vw;
+  background-color: #f0f0f2;
+  padding: 20px;
+  border-right: 1px solid #e5e7eb;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  height: 90vh;
+  border-radius: 20px;
+  margin-top: 3vh;
+}
+
+.sidebarTitle {
+  font-size: 30px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+/* Plan details in the sidebar */
+.saved-plan {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.plan {
+  display: flex;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  padding: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    
+}
+
+.plan-selected{
+    display: flex;
+    background-color: #FF678B;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    padding: 20px;
+      margin-bottom: 20px;
+      cursor: pointer;
+}
+
+.planTxtWrp {
+  width: 70%;
+}
+
+.planTitle {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.flagWrp {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.centerWrp {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.planFlag {
+  font-size: 40px;
+  align-items: center;
+}
+
+.flagTxt {
+  font-size: 18px;
+  font-weight: 400;
+  text-align: center;
+}
+
+
+
+/* Details Panel Styles */
+.details {
+    background-color: #f8f8fb;
+    margin-top: 3vh;
+    margin-left: 3vw;
+    width: 70vw;
+    padding: 20px;
+    height: 90vh;
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    overflow-y: scroll;
+
+}
+
+/* Add this CSS class to style the Markdown content */
+.markdown-content {
+  font-size: 1.2em; /* Adjust the font size as needed */
+  line-height: 1.6; /* Adjust the line height for better readability */
+}
+
+.details h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.details h3 {
+  font-size: 18px;
+  margin-top: 20px;
+}
