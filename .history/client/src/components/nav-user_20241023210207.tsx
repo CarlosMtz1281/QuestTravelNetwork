@@ -66,7 +66,7 @@ const data = {
     },
     {
       title: "Profile",
-      url: "profile",
+      url: "dashboard/profile",
       icon: CircleUser,
       isActive: false
     }
