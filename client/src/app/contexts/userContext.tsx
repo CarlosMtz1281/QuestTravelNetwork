@@ -3,7 +3,7 @@
 import React from "react";
 import auth from "../../../firebase/config";
 import { GoogleAuthProvider, signInWithPopup, User as FirebaseUser, signOut } from "firebase/auth";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 // Define the UserContext type
 interface UserContextType {
@@ -18,19 +18,25 @@ const UserContext = React.createContext<UserContextType | undefined>(undefined);
 // Create a provider to wrap your app
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = React.useState<FirebaseUser | null>(null);
 
   React.useEffect(() => {
     const unsuscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setUser(user);
+        // Redirigir el usuario al dashboard si este esta en la pagina de login o la intenta acceder
+        if (pathname === "/login") {
+          router.push("/dashboard");
+        }
       } else {
         router.push("/login");
       }
     });
 
+
     return () => unsuscribe();
-  }, [router]);
+  }, []);
 
   const handleLogout = async () => {
     try {

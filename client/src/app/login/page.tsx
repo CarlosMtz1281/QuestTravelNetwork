@@ -58,7 +58,7 @@ export default function Login() {
       <div className="flex flex-col items-center w-3/4">
         <div className="flex items-end justify-center">
           <h1 className="text-7xl font-semibold p-5" style={{color: "#FF678B"}}>QUEST</h1>
-          <Image className="py-5" src="/logo.png" alt="Planeta con signo de ubicación" width={200} height={200}/>
+          <Image className="py-5" src="/logo.webp" alt="Planeta con signo de ubicación" width={200} height={200}/>
         </div>
         <Card className="w-2/3">
           <CardHeader>
