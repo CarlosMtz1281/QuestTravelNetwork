@@ -11,7 +11,6 @@ import {
   MessageCircleHeart,
   Sparkles,
   TicketsPlane,
-  CircleUser
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -64,12 +63,6 @@ const data = {
       icon: TicketsPlane,
       isActive: false,
     },
-    {
-      title: "Profile",
-      url: "profile",
-      icon: CircleUser,
-      isActive: false
-    }
   ],
 };
 

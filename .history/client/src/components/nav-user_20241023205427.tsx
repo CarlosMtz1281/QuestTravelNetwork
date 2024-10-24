@@ -64,12 +64,7 @@ const data = {
       icon: TicketsPlane,
       isActive: false,
     },
-    {
-      title: "Profile",
-      url: "profile",
-      icon: CircleUser,
-      isActive: false
-    }
+    
   ],
 };
 
