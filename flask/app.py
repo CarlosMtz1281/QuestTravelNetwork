@@ -1,59 +1,21 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, firestore
 
 # Initialize Flask app
 app = Flask(__name__)
 
+# Allow only requests from localhost:3000
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate("key.json")  # Replace "key.json" with your service account key file
+cred = credentials.Certificate("key.json")  # Replace with your service account key file
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
-# Dummy data to be inserted into Firestore (same as your original data)
-data = {
-    "users": [
-        {
-            "userKey": "user001",
-            "email": "john.doe@example.com",
-            "password": "password123",
-            "age": 30,
-            "name": "John",
-            "lastName": "Doe",
-            "nacionality": "American"
-        },
-        {
-            "userKey": "user002",
-            "email": "jane.smith@example.com",
-            "password": "mypassword",
-            "age": 25,
-            "name": "Jane",
-            "lastName": "Smith",
-            "nacionality": "British"
-        },
-        {
-            "userKey": "user003",
-            "email": "carlos.martinez@example.com",
-            "password": "securepass",
-            "age": 27,
-            "name": "Carlos",
-            "lastName": "Martinez",
-            "nacionality": "Mexican"
-        },
-        {
-            "userKey": "user004",
-            "email": "emma.wilson@example.com",
-            "password": "password456",
-            "age": 22,
-            "name": "Emma",
-            "lastName": "Wilson",
-            "nacionality": "Canadian"
-        }
-    ]
-    # The rest of the data for posts and plans...
-}
 
-# Define a route to fetch all users but exclude email and password
+# Route to fetch all users but exclude email and password
 @app.route('/users', methods=['GET'])
 def get_users():
     try:
@@ -63,7 +25,6 @@ def get_users():
 
         for doc in docs:
             user = doc.to_dict()
-            # Exclude email and password
             user.pop('email', None)
             user.pop('password', None)
             users_data.append(user)
@@ -73,7 +34,7 @@ def get_users():
         print(f"Error fetching users: {e}")
         return jsonify({"message": "Error fetching users", "error": str(e)}), 500
 
-# Define a route to fetch all posts
+# Route to fetch all posts
 @app.route('/posts', methods=['GET'])
 def get_posts():
     try:
@@ -86,7 +47,7 @@ def get_posts():
         print(f"Error fetching posts: {e}")
         return jsonify({"message": "Error fetching posts", "error": str(e)}), 500
 
-# Define a route to fetch a user's own posts by ID passed in headers
+# Route to fetch a user's posts by ID passed in headers
 @app.route('/getMyPosts', methods=['GET'])
 def get_my_posts():
     user_key = request.headers.get('userKey')
@@ -104,7 +65,7 @@ def get_my_posts():
         print(f"Error fetching user's posts: {e}")
         return jsonify({"message": "Error fetching user's posts", "error": str(e)}), 500
 
-# Define a route to fetch a user's plans by ID passed in headers
+# Route to fetch a user's plans by ID passed in headers
 @app.route('/getMyPlans', methods=['GET'])
 def get_my_plans():
     author_key = request.headers.get('authorKey')
@@ -122,7 +83,7 @@ def get_my_plans():
         print(f"Error fetching user's plans: {e}")
         return jsonify({"message": "Error fetching user's plans", "error": str(e)}), 500
 
-# Define a route to post new post data
+# Route to create a new post
 @app.route('/create_post', methods=['POST'])
 def create_post():
     try:
@@ -130,7 +91,7 @@ def create_post():
         if not post_data:
             return jsonify({"message": "No data provided"}), 400
 
-        # Validate required fields in post data
+        # Validate required fields
         required_fields = ["userKey", "description", "likes", "date", "location", "category"]
         for field in required_fields:
             if field not in post_data:
@@ -143,7 +104,35 @@ def create_post():
     except Exception as e:
         print(f"Error creating post: {e}")
         return jsonify({"message": "Error creating post", "error": str(e)}), 500
+    
+    # Route to create multiple plans
+@app.route('/create_plans', methods=['POST'])
+def create_plans():
+    try:
+        plans_data = request.json
+        if not plans_data:
+            return jsonify({"message": "No data provided"}), 400
+
+        # Validate that the provided data is a list
+        if not isinstance(plans_data, list):
+            return jsonify({"message": "Data should be a list of plans"}), 400
+
+        # Validate each plan
+        required_fields = ["authorKey", "dates", "name", "plan", "region"]
+        for plan in plans_data:
+            for field in required_fields:
+                if field not in plan:
+                    return jsonify({"message": f"Missing field: {field} in one of the plans"}), 400
+
+        # Add all plans to Firestore
+        for plan in plans_data:
+            db.collection('plans').add(plan)
+
+        return jsonify({"message": "Plans created successfully!"}), 201
+    except Exception as e:
+        print(f"Error creating plans: {e}")
+        return jsonify({"message": "Error creating plans", "error": str(e)}), 500
 
 # Main app runner
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5002, host='0.0.0.0')
