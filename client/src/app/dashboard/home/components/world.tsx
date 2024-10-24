@@ -6,7 +6,16 @@ import * as am5map from "@amcharts/amcharts5/map";
 import am5geodata_worldLow from "@amcharts/amcharts5-geodata/worldLow";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 
-const WorldMap = () => {
+interface Country {
+  id: string;
+  name: string;
+}
+
+interface WorldMapProps {
+  setSelectedCountry: (country: Country) => void;
+}
+
+const WorldMap: React.FC<WorldMapProps> = ({ setSelectedCountry }) => {
   useEffect(() => {
     // Create root element
     let root = am5.Root.new("chartdiv");
@@ -78,6 +87,9 @@ const WorldMap = () => {
       }
       if (target && target.get("active") && target.dataItem) {
         const countryId = (target.dataItem.dataContext as { id: string }).id;
+        const countryName = (target.dataItem.dataContext as { name: string })
+          .name;
+        setSelectedCountry({ id: countryId, name: countryName });
         selectCountry(countryId);
       }
       previousPolygon = target;
