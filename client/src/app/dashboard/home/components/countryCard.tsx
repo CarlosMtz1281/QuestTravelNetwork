@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import CategoryItem from "./categoryItem";
 import PreviewPostItem from "./previewPostItem";
 import NewPostModal from "./newPostModal";
-import "../styles.css";
 
 const url = "http://localhost:5002/posts";
 
