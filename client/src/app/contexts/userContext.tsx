@@ -123,7 +123,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       setUser(response.user);
       sessionStorage.setItem("user", JSON.stringify(response.user));
       await fetchUserData(response.user.email ?? "");
-      router.push("/dashboard");
+      router.push("/dashboard/home");
     } catch (error) {
       console.error("Error during Google sign-in", error);
     }
