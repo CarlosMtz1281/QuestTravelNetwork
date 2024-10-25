@@ -16,7 +16,7 @@ import CategoryItem from "./categoryItem";
 import PreviewPostItem from "./previewPostItem";
 import NewPostModal from "./newPostModal";
 
-const url = "http://localhost:5002/posts";
+const url = "https://quest-travel-network.vercel.app/posts";
 
 interface Country {
   id: string;
@@ -86,6 +86,7 @@ const CountryCard: React.FC<CountryCardProps> = ({
 
   useEffect(() => {
     const fetchPosts = async () => {
+      if (!country) return;
       try {
         const response = await fetch(url, {
           method: "GET",
