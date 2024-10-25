@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { Card } from "../elements";
 import "flag-icons/css/flag-icons.min.css";
 import {
@@ -14,6 +16,8 @@ import CategoryItem from "./categoryItem";
 import PreviewPostItem from "./previewPostItem";
 import NewPostModal from "./newPostModal";
 import "../styles.css";
+
+const url = "http://localhost:5002/posts";
 
 interface Country {
   id: string;
@@ -72,68 +76,57 @@ const categories = [
   },
 ];
 
-const posts: Post[] = [
-  {
-    location: "MX, Cancun",
-    img: "https://i.pinimg.com/originals/27/2c/b5/272cb5fa82fae045f1b72361a7d3c999.jpg",
-    likes: 80,
-    description:
-      "Cancun is a city in southeastern Mexico on the northeast coast of the Yucatán Peninsula in the Mexican state of Quintana Roo.",
-    author: "John Doe",
-    imgSource:
-      "https://i.pinimg.com/originals/27/2c/b5/272cb5fa82fae045f1b72361a7d3c999.jpg", // Added imgSource
-    date: Date.now(), // Current timestamp for the date
-    category: "Nature", // Example category
-    comments: [
-      {
-        id: 1,
-        authorKey: "Alice",
-        comment: "Beautiful place!",
-        likes: 5,
-      },
-      {
-        id: 2,
-        authorKey: "Bob",
-        comment: "I love Cancun!",
-        likes: 3,
-      },
-    ],
-  },
-  {
-    location: "MX, Yucatan",
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHM6sJnDfOAXe5_iIcLmYI3sKQCdsimKa5ig&s",
-    likes: 68,
-    description:
-      "Yucatan is a state in southeastern Mexico that is situated on the northern part of the Yucatán Peninsula.",
-    author: "Jane Doe",
-    imgSource:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHM6sJnDfOAXe5_iIcLmYI3sKQCdsimKa5ig&s", // Added imgSource
-    date: Date.now(), // Current timestamp for the date
-    category: "Hidden", // Example category
-    comments: [], // No comments initially
-  },
-  {
-    location: "MX, Tulum",
-    img: "https://media.tacdn.com/media/attractions-splice-spp-360x240/12/33/ce/ad.jpg",
-    likes: 25,
-    description:
-      "Tulum is a town on the Caribbean coastline of Mexico’s Yucatán Peninsula. It’s known for its beaches and well-preserved ruins of an ancient Mayan port city.",
-    author: "John Doe",
-    imgSource:
-      "https://media.tacdn.com/media/attractions-splice-spp-360x240/12/33/ce/ad.jpg", // Added imgSource
-    date: Date.now(), // Current timestamp for the date
-    category: "Gastro", // Example category
-    comments: [], // No comments initially
-  },
-];
-
 const CountryCard: React.FC<CountryCardProps> = ({
   selectedCountry,
   onPostSelect,
 }) => {
   const { country } = selectedCountry;
-
+  const [category, setCategory] = useState<string | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [openNewPostModal, setOpenNewPostModal] = useState(false);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            authorKey: "user001",
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const mappedPosts: Post[] = data.data
+          .filter((post: any) => post.location === country?.id)
+          .map((post: any) => ({
+            location: post.location,
+            img: post.link,
+            likes: post.likes,
+            description: post.description,
+            author: post.userKey,
+            imgSource: post.link,
+            date: post.date,
+            category: post.category || "Country",
+            comments: post.comments || [],
+          }));
+        const filteredPosts = category
+          ? mappedPosts.filter((post) => post.category === category)
+          : mappedPosts;
+
+        setPosts(filteredPosts);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+    fetchPosts();
+  }, [country, category]);
+
+  const handleCategoryClick = (name: string) => {
+    setCategory((prevCategory) => (prevCategory === name ? null : name));
+  };
 
   return (
     <>
@@ -189,12 +182,14 @@ const CountryCard: React.FC<CountryCardProps> = ({
                 Category
               </h1>
               <div className="mt-4 flex overflow-x-auto space-x-4 max-w-[400px] scrollbar-hide">
-                {categories.map((category) => (
+                {categories.map((cat) => (
                   <CategoryItem
-                    key={category.name}
-                    name={category.name}
-                    icon={category.icon}
-                    color={category.color}
+                    key={cat.name}
+                    name={cat.name}
+                    icon={cat.icon}
+                    color={cat.color}
+                    setCategory={handleCategoryClick}
+                    isSelected={category === cat.name} // Pass selected state
                   />
                 ))}
               </div>

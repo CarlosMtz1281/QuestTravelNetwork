@@ -56,9 +56,35 @@ const NewPostModal: React.FC<PostModalProps> = ({ isOpen, onClose }) => {
     }
   }, [form.watch("imageUrl")]);
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-    onClose();
+  const onSubmit = async (data: any) => {
+    try {
+      const response = await fetch("http://localhost:5002/create_post", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userKey: "user001",
+          description: data.description,
+          likes: 0,
+          date: new Date().toISOString(),
+          location: data.location,
+          category: data.category,
+          link: data.imageUrl,
+          comments: [],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      onClose();
+      form.reset();
+    } catch (error) {
+      console.error("Error creating post:", error);
+    }
   };
 
   const handleClose = () => {
@@ -169,10 +195,11 @@ const NewPostModal: React.FC<PostModalProps> = ({ isOpen, onClose }) => {
                           />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="nature">Nature</SelectItem>
-                          <SelectItem value="technology">Technology</SelectItem>
-                          <SelectItem value="art">Art</SelectItem>
-                          <SelectItem value="travel">Travel</SelectItem>
+                          <SelectItem value="Nature">Nature</SelectItem>
+                          <SelectItem value="Gastro">Gastronomy</SelectItem>
+                          <SelectItem value="Hidden">Hidden</SelectItem>
+                          <SelectItem value="Solo">Solo Travel</SelectItem>
+                          <SelectItem value="Budget">Budget Travel</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
