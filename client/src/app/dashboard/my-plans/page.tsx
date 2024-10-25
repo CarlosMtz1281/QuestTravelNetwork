@@ -29,7 +29,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-const url = "http://localhost:5002/getMyPlans";
+const url = "https://quest-travel-network.vercel.app/getMyPlans";
 
 export interface Plan {
   authorKey: string;
@@ -101,6 +101,10 @@ const MyPlans = () => {
     setIsModalOpen(false);
     fetchUsers(); // Fetch data again when the modal closes
   };
+
+  function deletePlan() {
+    console.log("Delete Plan");
+  }
   
   return (
     <div className="container">
@@ -138,7 +142,11 @@ const MyPlans = () => {
           >
             {formatPlan(selectedPlan.plan)}
           </ReactMarkdown>
+          
         )}
+        <button className="deleteBtn">
+          delete
+          </button>
       </div>
     </div>
   );
