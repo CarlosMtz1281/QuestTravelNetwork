@@ -10,6 +10,7 @@ import CommentInput from "./components/inputComment";
 import LikeButton from "./components/likeButton";
 import CategoryItem from "./components/categoryItem";
 import { Separator } from "../ui/separator";
+import { useUser } from "@/app/contexts/userContext";
 
 
 interface PostModalProps {
@@ -33,14 +34,15 @@ interface PostModalProps {
 
 const PostModal: FC<PostModalProps> = ({ isOpen, onClose, postContent }) => {
   const [comments, setComments] = useState(postContent.comments);  // State to store comments
+  const { userData } = useUser();  // Get the current user data
 
   // Handle comment submission
   const handleCommentSubmit = (newComment: string) => {
     const newCommentObj = {
       id: comments.length + 1,  // Just a simple id for the new comment
-      name: "You",  // Assuming the current user is commenting
-      avatar: "https://randomuser.me/api/portraits/men/3.jpg",  // Placeholder avatar
-      text: newComment,
+      authorKey: userData?.userKey ?? 'You',  // Assuming the current user is commenting
+      comment: newComment,  // Placeholder avatar
+      likes: 0
     };
 
     // Update the comments state

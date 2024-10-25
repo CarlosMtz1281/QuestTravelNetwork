@@ -5,14 +5,35 @@ import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import PostModal from "@/components/post-modal";
+import { useUser } from "@/app/contexts/userContext";
+
+interface Comment {
+  id: number, 
+  authorKey: string,
+  comment: string,
+  likes: number
+}
+
+interface Post {
+  category: string;
+  comments: Comment[];
+  date: string;
+  description: string;
+  likes: number;
+  link: string;
+  location: string;
+  userKey: string;
+}
 
 const ProfilePage = () => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<any>(null);
-  const [posts, setPosts] = useState<any[]>([]); // Store posts from Firestore
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [posts, setPosts] = useState<Post[]>([] as Post[]); // Store posts from Firestore
   const [loading, setLoading] = useState(true); // Loading state
+  const { user, userData } = useUser();  // Get the current user data
 
-  const userKey = "user001"; // Replace with the actual userKey you want to use
+
+  const userKey = userData?.userKey ?? "user001"; // Replace with the actual userKey you want to use
 
   // Fetch posts on component mount
   useEffect(() => {
@@ -44,7 +65,7 @@ const ProfilePage = () => {
     fetchPosts();
   }, []); // Make sure fetchPosts only runs on mount
 
-  const openModal = (post: any) => {
+  const openModal = (post: Post) => {
     setSelectedPost(post);
     setModalOpen(true);
   };
@@ -60,7 +81,7 @@ const ProfilePage = () => {
       <div className="flex flex-row items-center text-center mb-8 space-x-12">
         <Avatar>
           <AvatarImage
-            src="https://github.com/shadcn.png"
+            src={user?.photoURL ?? "https://github.com/shadcn.png"}
             alt="@shadcn"
             className="rounded-full w-28 h-28 object-cover"
           />
@@ -68,7 +89,7 @@ const ProfilePage = () => {
         </Avatar>
         <div className="flex flex-col space-y-5">
           <div className="flex flex-row space-x-16">
-            <div className="text-3xl">Carolina Torreblanca</div>
+            <div className="text-3xl">{user?.displayName}</div>
             <Button className="ml-auto text-[#FF678B] border border-[#FF678B] bg-white hover:bg-[#FF678B] hover:text-white">
               Editar perfil
             </Button>
@@ -76,7 +97,7 @@ const ProfilePage = () => {
 
           <div className="flex flex-row space-x-14 text-lg mt-2">
             <div className="flex flex-row items-center space-x-1">
-              <p className="font-bold">2</p>
+              <p className="font-bold">{posts.length}</p>
               <p>publicaciones</p>
             </div>
             <div className="flex flex-row items-center space-x-1">
@@ -102,7 +123,7 @@ const ProfilePage = () => {
         <div className="grid grid-cols-3 gap-2">
           {posts.map((post) => (
             <img
-              key={post.id}
+              key={crypto.randomUUID()}
               src={post.link}
               alt={post.description}
               className="w-[240px] h-[240px] object-cover cursor-pointer"
