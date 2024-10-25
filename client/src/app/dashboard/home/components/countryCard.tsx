@@ -19,8 +19,19 @@ interface Country {
   name: string;
 }
 
+interface Post {
+  location: string;
+  img: string;
+  likes: number;
+  description: string;
+  author: string;
+}
+
 interface CountryCardProps {
-  selectedCountry: Country | null;
+  selectedCountry: {
+    country: Country | null;
+  };
+  onPostSelect: (post: Post) => void; // Callback to handle post selection
 }
 
 const categories = [
@@ -51,28 +62,42 @@ const categories = [
   },
 ];
 
-const posts = [
+const posts: Post[] = [
   {
     location: "MX, Cancun",
     img: "https://i.pinimg.com/originals/27/2c/b5/272cb5fa82fae045f1b72361a7d3c999.jpg",
     likes: 80,
+    description:
+      "Cancun is a city in southeastern Mexico on the northeast coast of the Yucatán Peninsula in the Mexican state of Quintana Roo.",
+    author: "John Doe",
   },
   {
     location: "MX, Yucatan",
     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHM6sJnDfOAXe5_iIcLmYI3sKQCdsimKa5ig&s",
     likes: 68,
+    description:
+      "Yuc is a state in southeastern Mexico that is situated on the northern part of the Yucatán Peninsula.",
+    author: "Jane Doe",
   },
   {
     location: "MX, Tulum",
     img: "https://media.tacdn.com/media/attractions-splice-spp-360x240/12/33/ce/ad.jpg",
     likes: 25,
+    description:
+      "Tulum is a town on the Caribbean coastline of Mexico’s Yucatán Peninsula. It’s known for its beaches and well-preserved ruins of an ancient Mayan port city.",
+    author: "John Doe",
   },
 ];
 
-const CountryCard: React.FC<CountryCardProps> = ({ selectedCountry }) => {
+const CountryCard: React.FC<CountryCardProps> = ({
+  selectedCountry,
+  onPostSelect,
+}) => {
+  const { country } = selectedCountry || {};
+
   return (
     <Card>
-      {selectedCountry ? (
+      {country ? (
         <>
           <div
             className="flex items-center justify-between"
@@ -80,14 +105,14 @@ const CountryCard: React.FC<CountryCardProps> = ({ selectedCountry }) => {
           >
             <div className="flex items-center">
               <span
-                className={`fi fi-${selectedCountry.id.toLowerCase()} rounded-50`}
+                className={`fi fi-${country?.id.toLowerCase()}`}
                 style={{
                   fontSize: "3rem",
                   boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
                 }}
               ></span>
               <h1 className="ml-4 font-bold" style={{ fontSize: "30px" }}>
-                {selectedCountry.name}
+                {country.name}
               </h1>
             </div>
             <div
@@ -143,6 +168,7 @@ const CountryCard: React.FC<CountryCardProps> = ({ selectedCountry }) => {
                   location={post.location}
                   img={post.img}
                   likes={post.likes}
+                  onClick={() => onPostSelect(post)}
                 />
               ))}
             </div>

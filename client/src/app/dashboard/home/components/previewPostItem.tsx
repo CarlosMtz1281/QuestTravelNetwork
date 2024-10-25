@@ -1,18 +1,30 @@
 import React from "react";
 import { Heart } from "lucide-react";
 
-interface Post {
+interface PreviewPostItemProps {
   location: string;
   img: string;
   likes: number;
+  onClick: () => void;
 }
 
-const PreviewPostItem: React.FC<Post> = ({ location, img, likes }) => {
+const PreviewPostItem: React.FC<PreviewPostItemProps> = ({
+  location,
+  img,
+  likes,
+  onClick,
+}) => {
   return (
     <div>
       <div
         className="relative shadow-md overflow-hidden"
-        style={{ borderRadius: "30px", width: "260px", height: "200px" }}
+        style={{
+          borderRadius: "30px",
+          width: "260px",
+          height: "200px",
+          cursor: "pointer",
+        }}
+        onClick={onClick}
       >
         <img
           src={img}
