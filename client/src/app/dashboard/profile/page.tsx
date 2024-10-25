@@ -10,38 +10,39 @@ const ProfilePage = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<any>(null);
   const [posts, setPosts] = useState<any[]>([]); // Store posts from Firestore
-  const [loading, setLoading] = useState(true);  // Loading state
+  const [loading, setLoading] = useState(true); // Loading state
 
-  const userKey = "user001";  // Replace with the actual userKey you want to use
-
-  // Function to fetch the posts from Firestore using the provided API
-  const fetchPosts = async () => {
-    try {
-      const response = await fetch("http://localhost:5002/getMyPosts", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "userKey": userKey,  // Pass the userKey in the headers
-        },
-      });
-
-      const result = await response.json();
-      
-      if (response.ok) {
-        setPosts(result.data);  // Set the fetched posts
-        setLoading(false);
-      } else {
-        console.error("Error fetching posts:", result.message);
-      }
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    }
-  };
+  const userKey = "user001"; // Replace with the actual userKey you want to use
 
   // Fetch posts on component mount
   useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true); // Start loading state here
+      try {
+        const response = await fetch("http://localhost:5002/getMyPosts", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "userKey": userKey,
+          },
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          setPosts(result.data); // Set the fetched posts
+        } else {
+          console.error("Error fetching posts:", result.message);
+        }
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      } finally {
+        setLoading(false); // Stop loading state here
+      }
+    };
+
     fetchPosts();
-  }, []);
+  }, []); // Make sure fetchPosts only runs on mount
 
   const openModal = (post: any) => {
     setSelectedPost(post);
@@ -112,7 +113,7 @@ const ProfilePage = () => {
       )}
 
       {/* Post Modal */}
-      {selectedPost && (
+      {isModalOpen && selectedPost && (
         <PostModal
           isOpen={isModalOpen}
           onClose={closeModal}

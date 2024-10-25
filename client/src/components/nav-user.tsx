@@ -54,7 +54,7 @@ const data = {
     },
     {
       title: "Feed",
-      url: "#",
+      url: "feed",
       icon: MessageCircleHeart,
       isActive: false,
     },
