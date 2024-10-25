@@ -12,12 +12,12 @@ const ProfilePage = () => {
   const [posts, setPosts] = useState<any[]>([]); // Store posts from Firestore
   const [loading, setLoading] = useState(true);  // Loading state
 
-  const userKey = "user001";  // Replace with the actual userKey you want to use
+  const userKey = "USER_KEY_HERE";  // Replace with the actual userKey you want to use
 
   // Function to fetch the posts from Firestore using the provided API
   const fetchPosts = async () => {
     try {
-      const response = await fetch("http://localhost:5002/getMyPosts", {
+      const response = await fetch("/getMyPosts", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -102,7 +102,7 @@ const ProfilePage = () => {
           {posts.map((post) => (
             <img
               key={post.id}
-              src={post.link}
+              src={post.imgSource}
               alt={post.description}
               className="w-[240px] h-[240px] object-cover cursor-pointer"
               onClick={() => openModal(post)} // Open modal with selected post data

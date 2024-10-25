@@ -12,7 +12,7 @@ const ProfilePage = () => {
   const [posts, setPosts] = useState<any[]>([]); // Store posts from Firestore
   const [loading, setLoading] = useState(true);  // Loading state
 
-  const userKey = "user001";  // Replace with the actual userKey you want to use
+  const userKey = "user003";  // Replace with the actual userKey you want to use
 
   // Function to fetch the posts from Firestore using the provided API
   const fetchPosts = async () => {

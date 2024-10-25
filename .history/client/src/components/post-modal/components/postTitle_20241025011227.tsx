@@ -19,13 +19,13 @@ function formatDate(dateString: string) {
 const PostTitle: FC<PostTitleProps> = ({ title, date }) => {
   return (
     <div className="flex flex-col">
-      <div className="flex flex-row justify-between items-center p-3">
+      <div className="flex flex-row space-y-2 items-center space-between p-3">
         <h2 className="text-2xl font-bold">
           {title}
         </h2>
-        <p className="text-gray-500">{formatDate(date)}</p> {/* Display formatted date */}
+        <p className="text-gray-500 flex-end">{formatDate(date)}</p> {/* Display formatted date */}
       </div>
-      <Separator />
+      <Separator></Separator>
     </div>
   );
 };

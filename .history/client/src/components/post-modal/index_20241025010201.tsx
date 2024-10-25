@@ -8,8 +8,6 @@ import PostTitle from './components/postTitle';
 import Comments from './components/comment';
 import CommentInput from "./components/inputComment";
 import LikeButton from "./components/likeButton";
-import CategoryItem from "./components/categoryItem";
-import { Separator } from "../ui/separator";
 
 
 interface PostModalProps {
@@ -64,20 +62,15 @@ const PostModal: FC<PostModalProps> = ({ isOpen, onClose, postContent }) => {
         </div>
 
         <div className='w-1/2 h-full flex flex-col overflow-y-auto'>
-          <PostTitle title={postContent.location} date={postContent.date}></PostTitle>
-          <p className="p-5 pt-3">{postContent.description}</p>
+          <PostTitle title={postContent.location}></PostTitle>
+          <p>{postContent.description}</p>
 
           <div>
             <Comments comments={postContent.comments} />  {/* Pass comments */}
           </div>
 
           <div className="absolute bottom-0">
-            <Separator className="w-100%"></Separator>
-            <div className="flex flex-row justify-between items-center">
-              <LikeButton initialLikes={postContent.likes} />
-              <CategoryItem name={postContent.category}></CategoryItem>
-            </div>
-              {/* Use LikeButton */}
+            <LikeButton initialLikes={postContent.likes} />  {/* Use LikeButton */}
             <CommentInput onSubmit={handleCommentSubmit} />
           </div>
         </div>
