@@ -105,6 +105,41 @@ def create_post():
         print(f"Error creating post: {e}")
         return jsonify({"message": "Error creating post", "error": str(e)}), 500
     
+
+# Route to create multiple posts
+@app.route('/create_posts', methods=['POST'])
+def create_posts():
+    try:
+        posts_data = request.json
+        if not posts_data:
+            return jsonify({"message": "No data provided"}), 400
+
+        # Validate that the provided data is a list
+        if not isinstance(posts_data, list):
+            return jsonify({"message": "Data should be a list of posts"}), 400
+
+        # Validate and insert each post
+        required_fields = ["userKey", "description", "likes", "date", "location", "category"]
+        for post in posts_data:
+            for field in required_fields:
+                if field not in post:
+                    return jsonify({"message": f"Missing field: {field} in one of the posts"}), 400
+
+            # Handle the case where comments might be in dictionary form and not a list
+            if isinstance(post.get("comments"), dict):
+                post["comments"] = [{"id": key, **value} for key, value in post["comments"].items()]
+
+            # Insert post into Firestore
+            db.collection('posts').add(post)
+
+        return jsonify({"message": "Posts created successfully!"}), 201
+    except Exception as e:
+        print(f"Error creating posts: {e}")
+        return jsonify({"message": "Error creating posts", "error": str(e)}), 500
+
+
+
+    
     # Route to create multiple plans
 @app.route('/create_plans', methods=['POST'])
 def create_plans():
