@@ -26,27 +26,21 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [user, setUser] = useState<FirebaseUser | null>(() => {
-    const storedUser = sessionStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
-  const [userData, setUserData] = useState<User | null>(() => {
-    const storedUserData = sessionStorage.getItem("userData");
-    return storedUserData ? JSON.parse(storedUserData) : null;
-  });
+
+  // Initialize state from session storage
+  const initialUser = typeof window !== "undefined" ? JSON.parse(sessionStorage.getItem("user") || "null") : null;
+  const initialUserData = typeof window !== "undefined" ? JSON.parse(sessionStorage.getItem("userData") || "null") : null;
+
+  const [user, setUser] = useState<FirebaseUser | null>(initialUser);
+  const [userData, setUserData] = useState<User | null>(initialUserData);
 
   const fetchUserData = async (email: string) => {
     try {
       const response = await fetch("http://localhost:5002/validateUser", {
-          method: "GET",
-          headers: { email },
-        }
-      );
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
+        method: "GET",
+        headers: { email },
+      });
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       setUserData(data.data);
       sessionStorage.setItem("userData", JSON.stringify(data.data));
@@ -57,18 +51,48 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    if (!user && initialUser) {
+      // Set the stored user if available
+      setUser(initialUser);
+    }
+
+    if (!userData && initialUserData) {
+      // Set the stored userData if available
+      setUserData(initialUserData);
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
         setUser(currentUser);
         sessionStorage.setItem("user", JSON.stringify(currentUser));
-        fetchUserData(currentUser.email ?? "");
-        if (pathname === "/login") router.push("/dashboard");
+
+        // Fetch user data only if it's not in session storage
+        if (!initialUserData) {
+          fetchUserData(currentUser.email ?? "");
+        }
+
+        if (pathname === "/login") {
+          router.push("/dashboard");
+        }
       } else {
         router.push("/login");
       }
     });
+
     return () => unsubscribe();
   }, [pathname, router]);
+
+  useEffect(() => {
+    // Update sessionStorage whenever userData changes
+    if (userData) {
+      sessionStorage.setItem("userData", JSON.stringify(userData));
+    }
+  }, [userData]);
+
+  useEffect(() => {
+    console.log("User:", user);
+    console.log("UserData:", userData);
+  });
 
   const handleLogout = async () => {
     try {
@@ -102,6 +126,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     </UserContext.Provider>
   );
 }
+
 
 export const useUser = (): UserContextType => {
   const context = useContext(UserContext);

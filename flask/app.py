@@ -1,20 +1,40 @@
+import firebase_admin
+import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import firebase_admin
+from dotenv import load_dotenv
 from firebase_admin import credentials, firestore
+
+
+# Cargar variables de entorno
+load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)
 
 # Allow only requests from localhost:3000
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={r"/*": {"origins": "http://localhost:3001"}})
+
+env_vars = {
+    "type": os.getenv("TYPE"),
+    "project_id": os.getenv("PROJECT_ID"),
+    "private_key_id": os.getenv("PRIVATE_KEY_ID"),
+    "private_key": os.getenv("PRIVATE_KEY"),
+    "client_email": os.getenv("CLIENT_EMAIL"),
+    "client_id": os.getenv("CLIENT_ID"),
+    "auth_uri": os.getenv("AUTH_URI"),
+    "token_uri": os.getenv("TOKEN_URI"),
+    "auth_provider_x509_cert_url": os.getenv("AUTH_PROVIDER_X509_CERT_URL"),
+    "client_x509_cert_url": os.getenv("CLIENT_X509_CERT_URL"),
+    "universe_domain": os.getenv("UNIVERSE_DOMAIN")
+}
 
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate("key.json")  # Replace with your service account key file
+cred = credentials.Certificate(env_vars)  # Replace with your service account key file
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
-@app.route('delete/plan', methods=['DELETE'])
+@app.route('/delete/plan', methods=['DELETE'])
 def delete_plan():
     plan_id = request.headers.get('id')
 
@@ -52,7 +72,7 @@ def get_user_data():
     try:
         # Query Firestore for the user document
         user_ref = db.collection('users').where('email', '==', email).stream()
-
+        print("Got user data")
         # Check if a user with the given email exists
         user_data = next(user_ref, None)
 
@@ -61,7 +81,7 @@ def get_user_data():
             data.pop('email', None)
             data.pop('password', None)            
             # Return user data as a JSON response
-            return jsonify({"message": "Email found", "data": data}), 500
+            return jsonify({"message": "Email found", "data": data}), 200
         
         else:
             return jsonify({"message": "Email not found"}), 404
