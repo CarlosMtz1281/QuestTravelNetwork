@@ -6,6 +6,8 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import PostModal from "@/components/post-modal";
 import { useUser } from "@/app/contexts/userContext";
+import { v4 as uuidv4 } from "uuid"; // Import the uuid function
+
 
 interface Comment {
   id: number, 
@@ -123,7 +125,7 @@ const ProfilePage = () => {
         <div className="grid grid-cols-3 gap-2">
           {posts.map((post) => (
             <img
-              key={crypto.randomUUID()}
+              key={uuidv4()}
               src={post.link}
               alt={post.description}
               className="w-[240px] h-[240px] object-cover cursor-pointer"
