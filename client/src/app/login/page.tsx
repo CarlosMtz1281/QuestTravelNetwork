@@ -1,39 +1,42 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import {
-  Form, 
-  FormControl, 
+  Form,
+  FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { useUser } from "../contexts/userContext"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { useUser } from "../contexts/userContext";
 
 const formSchema = z.object({
-  username: 
-    z.string()
-    .min(5,"Username must be at least 5 characters.")
+  username: z
+    .string()
+    .min(5, "Username must be at least 5 characters.")
     .max(50, "Username must not excede 50 characters."),
-  password: 
-    z.string()
-    .min(8,"Password must be at least 5 characters.")
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/, "Password must contain at least one uppercase letter, one lowercase letter, one number and a special character.")
-})
+  password: z
+    .string()
+    .min(8, "Password must be at least 5 characters.")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/,
+      "Password must contain at least one uppercase letter, one lowercase letter, one number and a special character."
+    ),
+});
 
 export default function Login() {
   const { signInWithGoogle } = useUser();
@@ -44,21 +47,36 @@ export default function Login() {
       username: "",
       password: "",
     },
-  })
+  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+    console.log(values);
   }
 
   return (
     <div className="flex items-center justify-center w-full">
       <div className="container">
-        <img className="h-dvh" src="/MapImage.jpg" alt="Cordillera boscosa con un cielo semi despejado"/>
+        <img
+          className="h-dvh"
+          src="/MapImage.jpg"
+          alt="Cordillera boscosa con un cielo semi despejado"
+        />
       </div>
       <div className="flex flex-col items-center w-3/4">
         <div className="flex items-end justify-center">
-          <h1 className="text-7xl font-semibold p-5" style={{color: "#FF678B"}}>QUEST</h1>
-          <Image className="py-5" src="/logo.webp" alt="Planeta con signo de ubicación" width={200} height={200}/>
+          <h1
+            className="text-7xl font-semibold p-5"
+            style={{ color: "#FF678B" }}
+          >
+            QUEST
+          </h1>
+          <Image
+            className="py-5"
+            src="/logo.webp"
+            alt="Planeta con signo de ubicación"
+            width={200}
+            height={200}
+          />
         </div>
         <Card className="w-2/3">
           <CardHeader>
@@ -66,7 +84,10 @@ export default function Login() {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-8"
+              >
                 <FormField
                   control={form.control}
                   name="username"
@@ -92,9 +113,7 @@ export default function Login() {
                       <FormControl>
                         <Input type="password" {...field} />
                       </FormControl>
-                      <FormDescription>
-                        Contraseña de acceso.
-                      </FormDescription>
+                      <FormDescription>Contraseña de acceso.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -103,15 +122,36 @@ export default function Login() {
             </Form>
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full" style={{background: "#FF678B"}} onClick={form.handleSubmit(onSubmit)}>Iniciar sesión</Button>
+            <Button
+              type="submit"
+              className="w-full"
+              style={{ background: "#FF678B" }}
+              onClick={form.handleSubmit(onSubmit)}
+            >
+              Iniciar sesión
+            </Button>
           </CardFooter>
         </Card>
-        <Button className="my-5 py-6 w-3/5 font-bold" style={{background: "#FF678B"}} onClick={() => {
-          signInWithGoogle();
-        }}>
+        <Button
+          className="my-5 py-6 w-3/5 font-bold"
+          style={{
+            borderRadius: "30px",
+            background: "#fff",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+            color: "black",
+          }}
+          onClick={() => {
+            signInWithGoogle();
+          }}
+        >
+          <img
+            src={"/googleLogo.png"}
+            alt="addIcon"
+            style={{ width: "6%", height: "auto" }}
+          />
           Continuar con Google
         </Button>
       </div>
     </div>
-  )
+  );
 }
