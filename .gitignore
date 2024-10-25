@@ -1,1 +1,3 @@
 /flask/key.json
+/flask/venv/
+/flask/.env
