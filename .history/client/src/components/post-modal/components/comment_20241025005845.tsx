@@ -18,7 +18,7 @@ const Comments: FC<CommentsProps> = ({ comments }) => {
     <div className="flex flex-col space-y-10 p-5">
       {comments.length === 0 ? (
         // Display "No comments" if there are no comments
-        <p className="text-gray-500 text-center text-sm">No comments</p>
+        <p className="text-gray-500 text-center">No comments</p>
       ) : (
         // Otherwise, display the comments list
         comments.map((comment) => (

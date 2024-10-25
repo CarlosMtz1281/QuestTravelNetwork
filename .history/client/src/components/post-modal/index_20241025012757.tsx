@@ -72,8 +72,8 @@ const PostModal: FC<PostModalProps> = ({ isOpen, onClose, postContent }) => {
           </div>
 
           <div className="absolute bottom-0">
-            <Separator className="w-100%"></Separator>
             <div className="flex flex-row justify-between items-center">
+              <Separator className="w-100%"></Separator>
               <LikeButton initialLikes={postContent.likes} />
               <CategoryItem name={postContent.category}></CategoryItem>
             </div>

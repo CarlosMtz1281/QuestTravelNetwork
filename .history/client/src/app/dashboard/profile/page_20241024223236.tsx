@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -9,39 +9,63 @@ import PostModal from "@/components/post-modal";
 const ProfilePage = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<any>(null);
-  const [posts, setPosts] = useState<any[]>([]); // Store posts from Firestore
-  const [loading, setLoading] = useState(true);  // Loading state
 
-  const userKey = "user001";  // Replace with the actual userKey you want to use
-
-  // Function to fetch the posts from Firestore using the provided API
-  const fetchPosts = async () => {
-    try {
-      const response = await fetch("http://localhost:5002/getMyPosts", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "userKey": userKey,  // Pass the userKey in the headers
+  const posts = [
+    {
+      id: 1,
+      imgSource: "https://cdn.britannica.com/87/138787-050-33727493/Belovezhskaya-Forest-Poland.jpg",
+      alt: "Post 1",
+      description: "A view of the Belovezhskaya Forest, Poland.",
+      likes: 45,
+      date: 1634083200,
+      location: "Belovezhskaya Forest, Poland",
+      category: "Nature",
+      comments: [
+        {
+          id: 1,
+          authorKey: "https://randomuser.me/api/portraits/men/1.jpg",
+          comment: "This is such a beautiful place!",
+          likes: 5,
         },
-      });
-
-      const result = await response.json();
-      
-      if (response.ok) {
-        setPosts(result.data);  // Set the fetched posts
-        setLoading(false);
-      } else {
-        console.error("Error fetching posts:", result.message);
-      }
-    } catch (error) {
-      console.error("Error fetching posts:", error);
-    }
-  };
-
-  // Fetch posts on component mount
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+      ],
+    },
+    {
+      id: 2,
+      imgSource: "https://cdn.britannica.com/87/138787-050-33727493/Belovezhskaya-Forest-Poland.jpg",
+      alt: "Post 2",
+      description: "Another beautiful view of the forest.",
+      likes: 30,
+      date: 1634083201,
+      location: "Belovezhskaya Forest, Poland",
+      category: "Nature",
+      comments: [
+        {
+          id: 1,
+          authorKey: "https://randomuser.me/api/portraits/men/1.jpg",
+          comment: "I would love to visit this place someday.",
+          likes: 3,
+        },
+      ],
+    },
+    {
+      id: 3,
+      imgSource: "https://cdn.britannica.com/87/138787-050-33727493/Belovezhskaya-Forest-Poland.jpg",
+      alt: "Post 3",
+      description: "Captivating beauty of the forest.",
+      likes: 25,
+      date: 1634083202,
+      location: "Belovezhskaya Forest, Poland",
+      category: "Nature",
+      comments: [
+        {
+          id: 1,
+          authorKey: "https://randomuser.me/api/portraits/men/1.jpg",
+          comment: "A serene and peaceful environment.",
+          likes: 2,
+        },
+      ],
+    },
+  ];
 
   const openModal = (post: any) => {
     setSelectedPost(post);
@@ -95,21 +119,17 @@ const ProfilePage = () => {
       <Separator className="mb-4" />
 
       {/* Posts Grid */}
-      {loading ? (
-        <p>Loading posts...</p>
-      ) : (
-        <div className="grid grid-cols-3 gap-2">
-          {posts.map((post) => (
-            <img
-              key={post.id}
-              src={post.link}
-              alt={post.description}
-              className="w-[240px] h-[240px] object-cover cursor-pointer"
-              onClick={() => openModal(post)} // Open modal with selected post data
-            />
-          ))}
-        </div>
-      )}
+      <div className="grid grid-cols-3 gap-2">
+        {posts.map((post) => (
+          <img
+            key={post.id}
+            src={post.src}
+            alt={post.alt}
+            className="w-[240px] h-[240px] object-cover cursor-pointer"
+            onClick={() => openModal(post)} // Open modal with selected post data
+          />
+        ))}
+      </div>
 
       {/* Post Modal */}
       {selectedPost && (

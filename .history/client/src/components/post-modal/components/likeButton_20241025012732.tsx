@@ -1,7 +1,7 @@
 // components/LikeButton.tsx
 import React, { useState, FC } from "react";
 import { Heart } from 'lucide-react';
-
+import { Separator } from "@/components/ui/separator";
 
 interface LikeButtonProps {
   initialLikes: number;
