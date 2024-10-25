@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "../elements";
 import "flag-icons/css/flag-icons.min.css";
 import {
@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import CategoryItem from "./categoryItem";
 import PreviewPostItem from "./previewPostItem";
+import NewPostModal from "./newPostModal";
 import "../styles.css";
 
 interface Country {
@@ -25,13 +26,22 @@ interface Post {
   likes: number;
   description: string;
   author: string;
+  imgSource: string;
+  date: number;
+  category: string;
+  comments: {
+    id: number;
+    authorKey: string;
+    comment: string;
+    likes: number;
+  }[];
 }
 
 interface CountryCardProps {
   selectedCountry: {
     country: Country | null;
   };
-  onPostSelect: (post: Post) => void; // Callback to handle post selection
+  onPostSelect: (post: Post | null) => void;
 }
 
 const categories = [
@@ -70,14 +80,37 @@ const posts: Post[] = [
     description:
       "Cancun is a city in southeastern Mexico on the northeast coast of the Yucatán Peninsula in the Mexican state of Quintana Roo.",
     author: "John Doe",
+    imgSource:
+      "https://i.pinimg.com/originals/27/2c/b5/272cb5fa82fae045f1b72361a7d3c999.jpg", // Added imgSource
+    date: Date.now(), // Current timestamp for the date
+    category: "Nature", // Example category
+    comments: [
+      {
+        id: 1,
+        authorKey: "Alice",
+        comment: "Beautiful place!",
+        likes: 5,
+      },
+      {
+        id: 2,
+        authorKey: "Bob",
+        comment: "I love Cancun!",
+        likes: 3,
+      },
+    ],
   },
   {
     location: "MX, Yucatan",
     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHM6sJnDfOAXe5_iIcLmYI3sKQCdsimKa5ig&s",
     likes: 68,
     description:
-      "Yuc is a state in southeastern Mexico that is situated on the northern part of the Yucatán Peninsula.",
+      "Yucatan is a state in southeastern Mexico that is situated on the northern part of the Yucatán Peninsula.",
     author: "Jane Doe",
+    imgSource:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHM6sJnDfOAXe5_iIcLmYI3sKQCdsimKa5ig&s", // Added imgSource
+    date: Date.now(), // Current timestamp for the date
+    category: "Hidden", // Example category
+    comments: [], // No comments initially
   },
   {
     location: "MX, Tulum",
@@ -86,6 +119,11 @@ const posts: Post[] = [
     description:
       "Tulum is a town on the Caribbean coastline of Mexico’s Yucatán Peninsula. It’s known for its beaches and well-preserved ruins of an ancient Mayan port city.",
     author: "John Doe",
+    imgSource:
+      "https://media.tacdn.com/media/attractions-splice-spp-360x240/12/33/ce/ad.jpg", // Added imgSource
+    date: Date.now(), // Current timestamp for the date
+    category: "Gastro", // Example category
+    comments: [], // No comments initially
   },
 ];
 
@@ -93,124 +131,133 @@ const CountryCard: React.FC<CountryCardProps> = ({
   selectedCountry,
   onPostSelect,
 }) => {
-  const { country } = selectedCountry || {};
+  const { country } = selectedCountry;
+
+  const [openNewPostModal, setOpenNewPostModal] = useState(false);
 
   return (
-    <Card>
-      {country ? (
-        <>
-          <div
-            className="flex items-center justify-between"
-            style={{ width: "100%" }}
-          >
-            <div className="flex items-center">
-              <span
-                className={`fi fi-${country?.id.toLowerCase()}`}
+    <>
+      <Card>
+        {country ? (
+          <>
+            <div
+              className="flex items-center justify-between"
+              style={{ width: "100%" }}
+            >
+              <div className="flex items-center">
+                <span
+                  className={`fi fi-${country.id.toLowerCase()}`}
+                  style={{
+                    fontSize: "3rem",
+                    boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+                  }}
+                ></span>
+                <h1 className="ml-4 font-bold" style={{ fontSize: "30px" }}>
+                  {country.name}
+                </h1>
+              </div>
+              <div
+                className="flex items-center"
                 style={{
-                  fontSize: "3rem",
-                  boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+                  border: "solid 1px #FF0066",
+                  borderRadius: "20px",
+                  padding: "5px 10px",
+                  backgroundColor: "#FF0066",
                 }}
-              ></span>
-              <h1 className="ml-4 font-bold" style={{ fontSize: "30px" }}>
-                {country.name}
-              </h1>
-            </div>
-            <div
-              className="flex items-center"
-              style={{
-                border: "solid 1px #FF0066",
-                borderRadius: "20px",
-                padding: "5px 10px",
-                backgroundColor: "#FF0066",
-              }}
-            >
-              <Star className="text-[#FFD875]" fill="#FFD875" />{" "}
-              <p
-                style={{ marginLeft: "5px", color: "#fff", fontWeight: "bold" }}
               >
-                5.0
-              </p>
+                <Star className="text-[#FFD875]" fill="#FFD875" />
+                <p
+                  style={{
+                    marginLeft: "5px",
+                    color: "#fff",
+                    fontWeight: "bold",
+                  }}
+                >
+                  5.0
+                </p>
+              </div>
             </div>
-          </div>
-          <div
-            style={{
-              border: "solid 1px rgba(0, 0, 0, 0.06)",
-              width: "100%",
-              margin: "30px",
-            }}
-          />
-          <div style={{ marginTop: "20px" }}>
-            <h1 className="ml-4 font-bold" style={{ fontSize: "20px" }}>
-              Category
-            </h1>
             <div
-              className="mt-4 flex overflow-x-auto space-x-4 max-w-[400px] scrollbar-hide"
-              style={{}}
-            >
-              {categories.map((category) => (
-                <CategoryItem
-                  key={category.name}
-                  name={category.name}
-                  icon={category.icon}
-                  color={category.color}
-                />
-              ))}
-            </div>
-          </div>
-          <div style={{ marginTop: "20px" }}>
-            <h1 className="ml-4 font-bold" style={{ fontSize: "20px" }}>
-              Popular
-            </h1>
-            <div className="mt-4 flex overflow-x-auto space-x-4 max-w-[400px] scrollbar-hide">
-              {posts.map((post) => (
-                <PreviewPostItem
-                  key={post.location}
-                  location={post.location}
-                  img={post.img}
-                  likes={post.likes}
-                  onClick={() => onPostSelect(post)}
-                />
-              ))}
-            </div>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: "30px",
-              padding: "20px",
-              width: "100%",
-            }}
-          >
-            <Button
               style={{
+                border: "solid 1px rgba(0, 0, 0, 0.06)",
                 width: "100%",
-                height: "60px",
-                borderRadius: "30px",
-                border: "solid 1px #FF678B",
-                backgroundColor: "#fff",
-                color: "#FF678B",
-                fontSize: "25px",
-                fontWeight: "bold",
+                margin: "30px",
               }}
-              onClick={() => {}}
+            />
+            <div style={{ marginTop: "20px" }}>
+              <h1 className="ml-4 font-bold" style={{ fontSize: "20px" }}>
+                Category
+              </h1>
+              <div className="mt-4 flex overflow-x-auto space-x-4 max-w-[400px] scrollbar-hide">
+                {categories.map((category) => (
+                  <CategoryItem
+                    key={category.name}
+                    name={category.name}
+                    icon={category.icon}
+                    color={category.color}
+                  />
+                ))}
+              </div>
+            </div>
+            <div style={{ marginTop: "20px" }}>
+              <h1 className="ml-4 font-bold" style={{ fontSize: "20px" }}>
+                Popular
+              </h1>
+              <div className="mt-4 flex overflow-x-auto space-x-4 max-w-[400px] scrollbar-hide">
+                {posts.map((post) => (
+                  <PreviewPostItem
+                    key={post.location}
+                    location={post.location}
+                    img={post.img}
+                    likes={post.likes}
+                    onClick={() => onPostSelect(post)}
+                  />
+                ))}
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "30px",
+                padding: "20px",
+                width: "100%",
+              }}
             >
-              Post
-              <img
-                src={"/Add.png"}
-                alt="addIcon"
-                style={{ width: "15%", height: "auto" }}
-              />
-            </Button>
-          </div>
-          <div style={{ padding: "15px", color: "gray" }}>
-            <p>Share your adventures in the country you visited </p>
-          </div>
-        </>
-      ) : (
-        <span>No country selected</span>
-      )}
-    </Card>
+              <Button
+                style={{
+                  width: "100%",
+                  height: "60px",
+                  borderRadius: "30px",
+                  border: "solid 1px #FF678B",
+                  backgroundColor: "#fff",
+                  color: "#FF678B",
+                  fontSize: "25px",
+                  fontWeight: "bold",
+                }}
+                onClick={() => setOpenNewPostModal(true)}
+              >
+                Post
+                <img
+                  src={"/Add.png"}
+                  alt="addIcon"
+                  style={{ width: "15%", height: "auto" }}
+                />
+              </Button>
+            </div>
+            <div style={{ padding: "15px", color: "gray" }}>
+              <p>Share your adventures in the country you visited.</p>
+            </div>
+          </>
+        ) : (
+          <span>No country selected</span>
+        )}
+      </Card>
+      <NewPostModal
+        isOpen={openNewPostModal}
+        onClose={() => setOpenNewPostModal(false)}
+      />
+    </>
   );
 };
 
