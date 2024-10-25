@@ -14,6 +14,34 @@ cred = credentials.Certificate("key.json")  # Replace with your service account 
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
+@app.route('delete/plan', methods=['DELETE'])
+def delete_plan():
+    plan_id = request.headers.get('id')
+
+    if not plan_id:
+        return jsonify({"message": "ID not provided in headers"}), 404
+
+    try:
+        # Query Firestore to find the document with the specific 'id' field value
+        plans_ref = db.collection('plans')
+        query = plans_ref.where('id', '==', plan_id).stream()
+
+        # Iterate over the result and delete each document found (should be one)
+        found_plan = False
+        for plan in query:
+            plan.delete()  # This deletes the document
+            found_plan = True
+        
+        if found_plan:
+            return jsonify({"message": f"Plan with id {plan_id} deleted successfully"}), 200
+        else:
+            return jsonify({"message": "Plan not found"}), 404
+
+    except Exception as e:
+        print(f"Error fetching user data: {e}")
+        return jsonify({"message": "Error deleting plan", "error": str(e)}), 500
+        
+
 @app.route('/validateUser', methods=['GET'])
 def get_user_data():
     email = request.headers.get('email')
@@ -33,7 +61,8 @@ def get_user_data():
             data.pop('email', None)
             data.pop('password', None)            
             # Return user data as a JSON response
-            return jsonify({"message": "Email not found", "data": data})
+            return jsonify({"message": "Email found", "data": data}), 500
+        
         else:
             return jsonify({"message": "Email not found"}), 404
         
