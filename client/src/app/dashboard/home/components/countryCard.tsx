@@ -201,7 +201,7 @@ const CountryCard: React.FC<CountryCardProps> = ({
               <div className="mt-4 flex overflow-x-auto space-x-4 max-w-[400px] scrollbar-hide">
                 {posts.map((post) => (
                   <PreviewPostItem
-                    key={post.location}
+                    key={post.img}
                     location={post.location}
                     img={post.img}
                     likes={post.likes}
