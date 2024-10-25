@@ -67,7 +67,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         sessionStorage.setItem("user", JSON.stringify(currentUser));
 
         // Fetch user data only if it's not in session storage
-        if (!initialUserData) {
+        if (!initialUserData && pathname !== "/login") {
           fetchUserData(currentUser.email ?? "");
         }
 

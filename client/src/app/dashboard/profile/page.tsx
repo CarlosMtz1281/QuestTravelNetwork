@@ -5,11 +5,30 @@ import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import PostModal from "@/components/post-modal";
+import { randomUUID } from "crypto";
+
+interface Comment {
+  id: number, 
+  authorKey: string,
+  comment: string,
+  likes: number
+}
+
+interface Post {
+  category: string;
+  comments: Comment[];
+  date: string;
+  description: string;
+  likes: number;
+  link: string;
+  location: string;
+  userKey: string;
+}
 
 const ProfilePage = () => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<any>(null);
-  const [posts, setPosts] = useState<any[]>([]); // Store posts from Firestore
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [posts, setPosts] = useState<Post[]>([] as Post[]); // Store posts from Firestore
   const [loading, setLoading] = useState(true); // Loading state
 
   const userKey = "user001"; // Replace with the actual userKey you want to use
@@ -44,7 +63,7 @@ const ProfilePage = () => {
     fetchPosts();
   }, []); // Make sure fetchPosts only runs on mount
 
-  const openModal = (post: any) => {
+  const openModal = (post: Post) => {
     setSelectedPost(post);
     setModalOpen(true);
   };
@@ -102,7 +121,7 @@ const ProfilePage = () => {
         <div className="grid grid-cols-3 gap-2">
           {posts.map((post) => (
             <img
-              key={post.id}
+              key={crypto.randomUUID()}
               src={post.link}
               alt={post.description}
               className="w-[240px] h-[240px] object-cover cursor-pointer"
