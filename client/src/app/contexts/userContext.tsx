@@ -42,11 +42,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
 
   const fetchUserData = async (email: string) => {
+    console.log("Fetching user data...", email);
     try {
       const response = await fetch("https://quest-travel-network.vercel.app/validateUser", {
         method: "GET",
         headers: { email },
       });
+      console.log(response);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       setUserData(data.data);
