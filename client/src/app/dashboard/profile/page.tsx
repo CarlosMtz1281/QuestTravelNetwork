@@ -40,7 +40,7 @@ const ProfilePage = () => {
     const fetchPosts = async () => {
       setLoading(true); // Start loading state here
       try {
-        const response = await fetch("http://localhost:5002/getMyPosts", {
+        const response = await fetch("https://quest-travel-network.vercel.app/getMyPosts", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

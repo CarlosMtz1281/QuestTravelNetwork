@@ -28,6 +28,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useUser } from "@/app/contexts/userContext";
 
 const url = "https://quest-travel-network.vercel.app/getMyPlans";
 
@@ -49,13 +50,14 @@ const MyPlans = () => {
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(
     plans.length > 0 ? plans[0] : null
   );
+  const { userData } = useUser();
 
   const fetchUsers = async () => {
     try {
       const response = await fetch(url, {
         method: "GET",
         headers: {
-          authorKey: "user001",
+          authorKey: userData?.userKey || "user001",
         },
       });
       if (!response.ok) {
