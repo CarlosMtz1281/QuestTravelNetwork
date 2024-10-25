@@ -12,12 +12,23 @@ interface Country {
   name: string;
 }
 
+interface Comment {
+  id: number;
+  authorKey: string;
+  comment: string;
+  likes: number;
+}
+
 interface Post {
   location: string;
   img: string;
   likes: number;
   description: string;
   author: string;
+  imgSource: string;
+  date: number;
+  category: string;
+  comments: Comment[];
 }
 
 const defaultCountry: Country = {
@@ -26,9 +37,8 @@ const defaultCountry: Country = {
 };
 
 const HomePage: React.FC = () => {
-  const [selectedCountry, setSelectedCountry] = useState<Country | null>(
-    defaultCountry
-  );
+  const [selectedCountry, setSelectedCountry] =
+    useState<Country>(defaultCountry); // Default country should not be null
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const handlePostSelect = (post: Post | null) => {
