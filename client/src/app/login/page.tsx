@@ -53,7 +53,7 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center w-full">
       <div className="container">
-        <img className="h-dvh" src="/mapImage.jpg" alt="Cordillera boscosa con un cielo semi despejado"/>
+        <img className="h-dvh" src="/MapImage.jpg" alt="Cordillera boscosa con un cielo semi despejado"/>
       </div>
       <div className="flex flex-col items-center w-3/4">
         <div className="flex items-end justify-center">

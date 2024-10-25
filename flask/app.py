@@ -23,7 +23,7 @@ print(os.getenv('GOOGLE_GENAI_API_KEY'))
 genai.configure(api_key=api_key)
 
 # Allow only requests from localhost:3000
-CORS(app, resources={r"/*": {"origins": "http://localhost:3001"}})
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000","http://questnetwork.duckdns.org:3000/dashboard/home", "http://localhost:3001"]}})
 
 env_vars = {
     "type": os.getenv("TYPE"),
