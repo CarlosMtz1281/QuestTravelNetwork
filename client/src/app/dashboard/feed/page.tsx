@@ -1,44 +1,57 @@
 import React from "react";
 import Post from "./components/post";
 
-export default function Feed() {
+const url = "https://quest-travel-network.vercel.app/posts";
+
+interface PostType {
+	id: string;
+	category: string;
+	location: string;
+	description: string;
+	userKey: string;
+	link: string;
+	comments: Comment[];
+	likes: number;
+	date: string;
+}
+interface Comment {
+	id: number;
+	userName: string;
+	userAvatar: string;
+	content: string;
+	timestamp: string;
+}
+
+export default async function Feed() {
+	const response = await fetch(url, {
+		method: "GET",
+	});
+
+	const postsData = await response.json();
+
+	// Ensure we have an array inside the `data` property
+	const posts = Array.isArray(postsData.data) ? postsData.data : [];
+
 	return (
 		<div>
-			<h1
-				className="text-3xl font-semibold   
-            text-gray-800 tracjing-tight mb-4"
-			>
+			<h1 className="text-3xl font-semibold text-gray-800 tracking-tight mb-4">
 				Feed
 			</h1>
-
 			<div className="flex flex-wrap h-full w-full gap-4 items-center justify-around">
-				<Post
-					imageUrl=""
-					location="Swiss Alps, Switzerland"
-					title="Serene Mountain Getaway"
-					description="Discover the breathtaking beauty of the Swiss Alps with its crystal-clear lakes and majestic peaks."
-					likes={0}
-					comments={[
-						{
-							id: 1,
-							userName: "Mountain Lover",
-							userAvatar: "/placeholder.svg?height=32&width=32",
-							content:
-								"This view is absolutely stunning! I can't wait to visit.",
-							timestamp: "2 hours ago",
-						},
-						{
-							id: 2,
-							userName: "Adventure Seeker",
-							userAvatar: "/placeholder.svg?height=32&width=32",
-							content:
-								"The Swiss Alps are on my bucket list. Any recommendations for hiking trails?",
-							timestamp: "1 day ago",
-						},
-					]}
-					userName="Alex Traveler"
-					userAvatar="/placeholder.svg?height=40&width=40"
-				/>
+				{posts.map((post: PostType, index: React.Key | null | undefined) => (
+					<Post
+						key={index}
+						link={post.link}
+						id={post.id}
+						date={post.date}
+						category={post.category}
+						location={post.location}
+						description={post.description}
+						userKey={post.userKey}
+						comments={post.comments}
+						likes={post.likes}
+					/>
+				))}
 			</div>
 		</div>
 	);

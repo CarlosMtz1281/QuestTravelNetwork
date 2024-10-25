@@ -3,7 +3,6 @@
 
 import { useState } from "react";
 import { MessageCircle, Send } from "lucide-react";
-import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,40 +31,24 @@ interface Comment {
 }
 
 interface PostProps {
-	imageUrl: string;
+	id: string;
+	category: string;
 	location: string;
-	title: string;
 	description: string;
-	likes: number;
+	userKey: string;
+	link: string;
 	comments: Comment[];
-	userName: string;
-	userAvatar: string;
+	likes: number;
+	date: string;
 }
 
 export default function Post({
-	imageUrl = "https://uyqrxwxbgkgbvwcqjytv.supabase.co/storage/v1/object/public/images/travel-app/mountain-lake.jpg",
-	location = "Swiss Alps, Switzerland",
-	title = "Serene Mountain Getaway",
-	description = "Discover the breathtaking beauty of the Swiss Alps with its crystal-clear lakes and majestic peaks.",
-	comments = [
-		{
-			id: 1,
-			userName: "Mountain Lover",
-			userAvatar: "/placeholder.svg?height=32&width=32",
-			content: "This view is absolutely stunning! I can't wait to visit.",
-			timestamp: "2 hours ago",
-		},
-		{
-			id: 2,
-			userName: "Adventure Seeker",
-			userAvatar: "/placeholder.svg?height=32&width=32",
-			content:
-				"The Swiss Alps are on my bucket list. Any recommendations for hiking trails?",
-			timestamp: "1 day ago",
-		},
-	],
-	userName = "Alex Traveler",
-	userAvatar = "/placeholder.svg?height=40&width=40",
+	category,
+	location,
+	description,
+	userKey,
+	link,
+	comments,
 }: PostProps) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [newComment, setNewComment] = useState("");
@@ -92,8 +75,8 @@ export default function Post({
 					<CardHeader className="p-0">
 						<div className="relative h-24 w-full overflow-hidden rounded-t-lg">
 							<img
-								src={imageUrl}
-								alt={title}
+								src={link}
+								alt={description}
 								className="absolute inset-0 h-full w-full object-cover"
 							/>
 							<div className="absolute bottom-2 left-2 bg-white/80 px-2 py-1 rounded-full text-sm font-medium">
@@ -102,16 +85,19 @@ export default function Post({
 						</div>
 					</CardHeader>
 					<CardContent className="p-4">
-						<h3 className="text-lg font-semibold mb-2">{title}</h3>
+						<h3 className="text-lg font-semibold mb-2">{category}</h3>
 						<p className="text-sm text-gray-600 line-clamp-2">{description}</p>
 					</CardContent>
 					<CardFooter className="flex items-center justify-between p-4 pt-0">
 						<div className="flex items-center space-x-2">
 							<Avatar>
-								<AvatarImage src={userAvatar} alt={userName} />
-								<AvatarFallback>{userName.charAt(0)}</AvatarFallback>
+								<AvatarImage
+									src="/placeholder.svg?height=32&width=32"
+									alt="User Avatar"
+								/>
+								<AvatarFallback>{userKey.charAt(0)}</AvatarFallback>
 							</Avatar>
-							<span className="text-sm font-medium">{userName}</span>
+							<span className="text-sm font-medium">{userKey}</span>
 						</div>
 					</CardFooter>
 				</Card>
@@ -120,17 +106,15 @@ export default function Post({
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 					<div className="flex flex-col">
 						<div className="relative h-64 md:h-80 w-full overflow-hidden rounded-lg">
-							<Image
-								src={imageUrl}
-								alt={title}
-								layout="fill"
-								objectFit="cover"
+							<img
+								src={link}
+								alt={description}
 								className="absolute inset-0 h-full w-full object-cover"
 							/>
 						</div>
 						<div className="mt-4">
 							<DialogHeader>
-								<DialogTitle className="text-2xl">{title}</DialogTitle>
+								<DialogTitle className="text-2xl">{category}</DialogTitle>
 								<DialogDescription>{location}</DialogDescription>
 							</DialogHeader>
 							<div className="py-4">
@@ -139,10 +123,13 @@ export default function Post({
 							<div className="flex items-center justify-between">
 								<div className="flex items-center space-x-2">
 									<Avatar>
-										<AvatarImage src={userAvatar} alt={userName} />
-										<AvatarFallback>{userName.charAt(0)}</AvatarFallback>
+										<AvatarImage
+											src="/placeholder.svg?height=32&width=32"
+											alt="User Avatar"
+										/>
+										<AvatarFallback>{userKey.charAt(0)}</AvatarFallback>
 									</Avatar>
-									<span className="text-sm font-medium">{userName}</span>
+									<span className="text-sm font-medium">{userKey}</span>
 								</div>
 								<Button
 									variant="ghost"
