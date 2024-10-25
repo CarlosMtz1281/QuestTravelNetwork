@@ -30,14 +30,14 @@ const ProfilePage = () => {
         {
           id: 1,
           authorKey: "https://randomuser.me/api/portraits/men/1.jpg",
-          comment: "A truly amazing example of the creation of nature...",
-          likes: 4,
+          name: "Azat Khabirov",
+          text: "A truly amazing example of the creation of nature...",
         },
         {
           id: 2,
-          authorKey: "https://randomuser.me/api/portraits/men/1.jpg",
-          comment: "A truly amazing example of the creation of nature...",
-          likes: 4,
+          name: "Alejandro Barrera",
+          avatar: "https://randomuser.me/api/portraits/men/2.jpg",
+          text: "The Kapova cave with cave paintings of ancient people...",
         },
       ],
   };

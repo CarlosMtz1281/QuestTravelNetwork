@@ -26,20 +26,6 @@ const ProfilePage = () => {
     date: 1634083200, // Unix timestamp for the date (this one is an example)
     location: "Shulgan-Tash cave, Russia",
     category: "Nature",
-    comments: [
-        {
-          id: 1,
-          authorKey: "https://randomuser.me/api/portraits/men/1.jpg",
-          comment: "A truly amazing example of the creation of nature...",
-          likes: 4,
-        },
-        {
-          id: 2,
-          authorKey: "https://randomuser.me/api/portraits/men/1.jpg",
-          comment: "A truly amazing example of the creation of nature...",
-          likes: 4,
-        },
-      ],
   };
   
 
@@ -69,8 +55,26 @@ const ProfilePage = () => {
       src: "https://cdn.britannica.com/87/138787-050-33727493/Belovezhskaya-Forest-Poland.jpg",
       alt: "Post 5",
     },
-
-
+    {
+      id: 6,
+      src: "https://cdn.britannica.com/87/138787-050-33727493/Belovezhskaya-Forest-Poland.jpg",
+      alt: "Post 6",
+    },
+    {
+      id: 7,
+      src: "https://cdn.britannica.com/87/138787-050-33727493/Belovezhskaya-Forest-Poland.jpg",
+      alt: "Post 7",
+    },
+    {
+      id: 8,
+      src: "https://cdn.britannica.com/87/138787-050-33727493/Belovezhskaya-Forest-Poland.jpg",
+      alt: "Post 8",
+    },
+    {
+      id: 9,
+      src: "https://cdn.britannica.com/87/138787-050-33727493/Belovezhskaya-Forest-Poland.jpg",
+      alt: "Post 9",
+    },
   ];
 
   return (
@@ -134,7 +138,7 @@ const ProfilePage = () => {
       <PostModal
         isOpen={isModalOpen}
         onClose={closeModal}
-        postContent={postContent} // Dynamically show post content
+        postContent={selectedPost ? selectedPost.alt : ""} // Dynamically show post content
       />
     </div>
   );

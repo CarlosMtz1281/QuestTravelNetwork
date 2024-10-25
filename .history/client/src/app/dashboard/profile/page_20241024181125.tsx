@@ -26,20 +26,6 @@ const ProfilePage = () => {
     date: 1634083200, // Unix timestamp for the date (this one is an example)
     location: "Shulgan-Tash cave, Russia",
     category: "Nature",
-    comments: [
-        {
-          id: 1,
-          authorKey: "https://randomuser.me/api/portraits/men/1.jpg",
-          comment: "A truly amazing example of the creation of nature...",
-          likes: 4,
-        },
-        {
-          id: 2,
-          authorKey: "https://randomuser.me/api/portraits/men/1.jpg",
-          comment: "A truly amazing example of the creation of nature...",
-          likes: 4,
-        },
-      ],
   };
   
 

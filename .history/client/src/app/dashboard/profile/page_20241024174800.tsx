@@ -19,30 +19,6 @@ const ProfilePage = () => {
     setSelectedPost(null); // Reset selected post when modal closes
   };
 
-  const postContent = {
-    imgSource: "https://cdn.britannica.com/87/138787-050-33727493/Belovezhskaya-Forest-Poland.jpg",
-    description: "A beautiful view of the Shulgan-Tash cave, known for its cave paintings from ancient civilizations.",
-    likes: 45,
-    date: 1634083200, // Unix timestamp for the date (this one is an example)
-    location: "Shulgan-Tash cave, Russia",
-    category: "Nature",
-    comments: [
-        {
-          id: 1,
-          authorKey: "https://randomuser.me/api/portraits/men/1.jpg",
-          comment: "A truly amazing example of the creation of nature...",
-          likes: 4,
-        },
-        {
-          id: 2,
-          authorKey: "https://randomuser.me/api/portraits/men/1.jpg",
-          comment: "A truly amazing example of the creation of nature...",
-          likes: 4,
-        },
-      ],
-  };
-  
-
   const posts = [
     {
       id: 1,
@@ -69,8 +45,26 @@ const ProfilePage = () => {
       src: "https://cdn.britannica.com/87/138787-050-33727493/Belovezhskaya-Forest-Poland.jpg",
       alt: "Post 5",
     },
-
-
+    {
+      id: 6,
+      src: "https://cdn.britannica.com/87/138787-050-33727493/Belovezhskaya-Forest-Poland.jpg",
+      alt: "Post 6",
+    },
+    {
+      id: 7,
+      src: "https://cdn.britannica.com/87/138787-050-33727493/Belovezhskaya-Forest-Poland.jpg",
+      alt: "Post 7",
+    },
+    {
+      id: 8,
+      src: "https://cdn.britannica.com/87/138787-050-33727493/Belovezhskaya-Forest-Poland.jpg",
+      alt: "Post 8",
+    },
+    {
+      id: 9,
+      src: "https://cdn.britannica.com/87/138787-050-33727493/Belovezhskaya-Forest-Poland.jpg",
+      alt: "Post 9",
+    },
   ];
 
   return (
@@ -118,7 +112,6 @@ const ProfilePage = () => {
      
           <div className="grid grid-cols-3 gap-2">
             {posts.map((post) => (
-              // eslint-disable-next-line @next/next/no-img-element
               <img
                 key={post.id}
                 src={post.src}
@@ -134,7 +127,7 @@ const ProfilePage = () => {
       <PostModal
         isOpen={isModalOpen}
         onClose={closeModal}
-        postContent={postContent} // Dynamically show post content
+        postContent={selectedPost ? selectedPost.alt : ""} // Dynamically show post content
       />
     </div>
   );
