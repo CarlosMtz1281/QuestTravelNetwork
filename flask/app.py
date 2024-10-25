@@ -2,9 +2,19 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, firestore
+import os
+import google.generativeai as genai
+import uuid
+from datetime import datetime
+from dateutil import parser
+import re
+
 
 # Initialize Flask app
 app = Flask(__name__)
+api_key = os.getenv('GOOGLE_GENAI_API_KEY')
+print(os.getenv('GOOGLE_GENAI_API_KEY'))
+genai.configure(api_key=api_key)
 
 # Allow only requests from localhost:3000
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
@@ -167,7 +177,86 @@ def create_plans():
     except Exception as e:
         print(f"Error creating plans: {e}")
         return jsonify({"message": "Error creating plans", "error": str(e)}), 500
+    
 
-# Main app runner
+@app.route('/test_gemini', methods=['GET'])
+def test_gemini():
+    try:
+        # Specify the model
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        
+        # Get the prompt from query parameters or use a default value
+        prompt = request.args.get('prompt', 'Hello, Gemini!')
+        
+        # Generate the response
+        response = model.generate_content(prompt)
+        
+        # Extract the generated text from the response
+        generated_text = response.candidates[0].content.parts[0].text
+        
+        return jsonify({"message": "Generated text from Gemini API", "data": generated_text}), 200
+    except Exception as e:
+        print(f"Error calling Gemini API: {e}")
+        return jsonify({"message": "Error calling Gemini API", "error": str(e)}), 500
+    
+    
+
+
+@app.route('/generate_plan', methods=['POST'])
+def generate_plan():
+    try:
+        # Parse request data
+        data = request.json
+        country = data.get("country")
+        dates = data.get("dates", {})
+        date_from = dates.get("from")
+        date_to = dates.get("to")
+        details = data.get("details")
+        name = data.get("name")
+
+        # Remove timezone name in parentheses (e.g., " (Central Standard Time)")
+        date_from = re.sub(r'\s*\(.*\)$', '', date_from)
+        date_to = re.sub(r'\s*\(.*\)$', '', date_to)
+
+        # Parse dates using dateutil's parser
+        date_from_obj = parser.parse(date_from)
+        date_to_obj = parser.parse(date_to)
+
+        # Format dates as desired
+        formatted_dates = f"{date_from_obj.strftime('%b %d')} - {date_to_obj.strftime('%b %d')}"
+
+        # Prompt for Gemini to generate itinerary
+        prompt = f"Create a detailed day-by-day itinerary for a trip to {country}. Trip details: {details}. Duration: from {formatted_dates}. Format the response in Markdown with sections by days."
+
+        # Send request to Gemini for itinerary generation
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        response = model.generate_content(prompt)
+        plan_text = response.text
+
+        # Prepare the Firebase document data
+        itinerary_id = str(uuid.uuid4())
+        itinerary_data = {
+            "authorKey": "user001",  # Adjust this dynamically as needed
+            "dates": formatted_dates,
+            "id": itinerary_id,
+            "name": name,
+            "plan": plan_text,
+            "region": country
+        }
+
+        # Save to Firebase
+        db.collection('plans').document(itinerary_id).set(itinerary_data)
+
+        return jsonify({
+            "message": "Itinerary generated and saved successfully",
+            "data": itinerary_data
+        }), 200
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"message": "Error generating itinerary", "error": str(e)}), 500
+    
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=5002, host='0.0.0.0')

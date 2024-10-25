@@ -15,6 +15,7 @@
   height: 90vh;
   border-radius: 20px;
   margin-top: 3vh;
+  overflow-y: scroll;
 }
 
 .sidebarTitle {
@@ -122,4 +123,103 @@
 .details h3 {
   font-size: 18px;
   margin-top: 20px;
+}
+
+.newPlanBtn{
+    background-color: #FF678B;
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 10px 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    font-size: 1.3vw;
+
+}
+
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+/* Modal content */
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+  z-index: 2; /* Ensure modal content is above other elements */
+}
+
+/* Close button */
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Modal form */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Form elements */
+.modal-form label {
+  font-weight: bold;
+}
+
+.modal-form input,
+.modal-form textarea,
+.modal-form .select-trigger,
+.modal-form .button {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.modal-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.modal-form .save-plan-btn {
+  background-color: #FF678B;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.modal-form .save-plan-btn:hover {
+  background-color: #f97b99;
+}
+
+.modalTittle{
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
 }
