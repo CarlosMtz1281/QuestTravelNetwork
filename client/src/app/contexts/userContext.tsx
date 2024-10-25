@@ -43,7 +43,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   const fetchUserData = async (email: string) => {
     try {
-      const response = await fetch("http://localhost:5002/validateUser", {
+      const response = await fetch("https://quest-travel-network.vercel.app/validateUser", {
         method: "GET",
         headers: { email },
       });
