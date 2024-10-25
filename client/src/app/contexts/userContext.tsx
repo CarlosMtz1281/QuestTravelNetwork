@@ -28,11 +28,18 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   // Initialize state from session storage
-  const initialUser = typeof window !== "undefined" ? JSON.parse(sessionStorage.getItem("user") || "null") : null;
-  const initialUserData = typeof window !== "undefined" ? JSON.parse(sessionStorage.getItem("userData") || "null") : null;
+  const [initialUser, setInitialUser] = useState<FirebaseUser | null>(null);
+  const [initialUserData, setInitialUserData] = useState<User | null>(null);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [userData, setUserData] = useState<User | null>(null);
 
-  const [user, setUser] = useState<FirebaseUser | null>(initialUser);
-  const [userData, setUserData] = useState<User | null>(initialUserData);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setInitialUser(JSON.parse(sessionStorage.getItem("user") || "null"));
+      setInitialUserData(JSON.parse(sessionStorage.getItem("userData") || "null"));
+    }
+  }, []);
+
 
   const fetchUserData = async (email: string) => {
     try {
@@ -67,12 +74,12 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         sessionStorage.setItem("user", JSON.stringify(currentUser));
 
         // Fetch user data only if it's not in session storage
-        if (!initialUserData && pathname !== "/login") {
+        if (!initialUserData && pathname !== "/login" || pathname !== "/") {
           fetchUserData(currentUser.email ?? "");
         }
 
         if (pathname === "/login") {
-          router.push("/dashboard");
+          router.push("/dashboard/home");
         }
       } else {
         router.push("/login");

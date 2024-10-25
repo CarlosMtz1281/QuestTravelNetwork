@@ -97,7 +97,7 @@ const ProfilePage = () => {
 
           <div className="flex flex-row space-x-14 text-lg mt-2">
             <div className="flex flex-row items-center space-x-1">
-              <p className="font-bold">2</p>
+              <p className="font-bold">{posts.length}</p>
               <p>publicaciones</p>
             </div>
             <div className="flex flex-row items-center space-x-1">
