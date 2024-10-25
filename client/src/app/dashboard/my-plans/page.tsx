@@ -80,7 +80,7 @@ const MyPlans = () => {
   };
   console.log("Selected Plan: ", selectedPlan?.plan);
 
-  function formatPlan(plan:string) {
+  function formatPlan(plan: string) {
     // Ensure proper formatting for Markdown elements
     let formattedPlan = plan
       .replace(/(\*\*Day \d+: .*)/g, "\n$1") // Ensure each day starts on a new line
@@ -89,10 +89,10 @@ const MyPlans = () => {
       .replace(/([*] )/g, "\n$1") // Add newline before bullet points
       .replace(/(#+\s)/g, "\n$1") // Add newline before headers like #, ##, ###
       .replace(/\n{2,}/g, "\n"); // Clean up any extra blank lines
-  
+
     // Trim whitespace from start and end
     formattedPlan = formattedPlan.trim();
-  
+
     console.log("Formatted Plan: ", formattedPlan);
     return formattedPlan;
   }
@@ -107,7 +107,7 @@ const MyPlans = () => {
   function deletePlan() {
     console.log("Delete Plan");
   }
-  
+
   return (
     <div className="container">
       {/* Sidebar for Saved Plans */}
@@ -144,11 +144,8 @@ const MyPlans = () => {
           >
             {formatPlan(selectedPlan.plan)}
           </ReactMarkdown>
-          
         )}
-        <button className="deleteBtn">
-          delete
-          </button>
+        <button className="deleteBtn">delete</button>
       </div>
     </div>
   );
@@ -295,7 +292,11 @@ interface PlansModalProps {
   children: ReactNode;
 }
 
-const PlansModal: React.FC<PlansModalProps> = ({ isOpen, onClose, children }) => {
+const PlansModal: React.FC<PlansModalProps> = ({
+  isOpen,
+  onClose,
+  children,
+}) => {
   if (!isOpen) return null;
 
   // State for plans, selected plan, and modal inputs
@@ -424,32 +425,37 @@ const PlansModal: React.FC<PlansModalProps> = ({ isOpen, onClose, children }) =>
       details: planDetails,
     };
 
-  console.log('Plan data:', planData);
+    console.log("Plan data:", planData);
     try {
-      const response = await fetch('http://localhost:5002/generate_plan', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(planData),
-      });
+      const response = await fetch(
+        "https://quest-travel-network.vercel.app/generate_plan",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(planData),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
 
       const responseData = await response.json();
-      console.log('Plan created successfully:', responseData);
+      console.log("Plan created successfully:", responseData);
       onClose(); // Close the modal after successful submission
     } catch (error) {
-      console.error('Error creating plan:', error);
+      console.error("Error creating plan:", error);
     }
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <button className="modal-close" onClick={onClose}>&times;</button>
+        <button className="modal-close" onClick={onClose}>
+          &times;
+        </button>
         <h2 className="modalTittle">Create a New Plan</h2>
         <div className="modal-form">
           <label>Plan Name</label>
@@ -475,7 +481,7 @@ const PlansModal: React.FC<PlansModalProps> = ({ isOpen, onClose, children }) =>
               </SelectGroup>
             </SelectContent>
           </Select>
-          
+
           <label>Dates</label>
           <Popover>
             <PopoverTrigger asChild>
@@ -517,12 +523,13 @@ const PlansModal: React.FC<PlansModalProps> = ({ isOpen, onClose, children }) =>
             onChange={(e) => setPlanDetails(e.target.value)}
             placeholder="Enter trip details"
           ></textarea>
-          <button className="save-plan-btn" onClick={sendData}>Save Plan</button>
+          <button className="save-plan-btn" onClick={sendData}>
+            Save Plan
+          </button>
         </div>
       </div>
     </div>
   );
 };
-
 
 export default MyPlans;
