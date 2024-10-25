@@ -14,6 +14,32 @@ cred = credentials.Certificate("key.json")  # Replace with your service account 
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
+@app.route('/validateUser', methods=['GET'])
+def get_user_data():
+    email = request.headers.get('email')
+    
+    if not email:
+        return jsonify({"message": "email not provided in headers"}), 400
+    
+    try:
+        # Query Firestore for the user document
+        user_ref = db.collection('users').where('email', '==', email).stream()
+
+        # Check if a user with the given email exists
+        user_data = next(user_ref, None)
+
+        if user_data:
+            data = user_data.to_dict()
+            data.pop('email', None)
+            data.pop('password', None)            
+            # Return user data as a JSON response
+            return jsonify({"message": "Email not found", "data": data})
+        else:
+            return jsonify({"message": "Email not found"}), 404
+        
+    except Exception as e:
+        print(f"Error fetching user data: {e}")
+        return jsonify({"message": "Error fetching user data", "error": str(e)}), 500
 
 # Route to fetch all users but exclude email and password
 @app.route('/users', methods=['GET'])
