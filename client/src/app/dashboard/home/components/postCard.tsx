@@ -31,8 +31,21 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostSelect }) => {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
+    // Create a manual postContent object
+    const postContent = {
+      link: post.img, // Ensure this is the correct image URL
+      description: post.description,
+      likes: post.likes,
+      date: new Date(post.date).toLocaleDateString(), // Format date as needed
+      location: post.location,
+      category: post.category,
+      comments: post.comments, // Assuming this is an array of comments
+    };
+
     setModalOpen(true);
+    return postContent; // Return the data if needed
   };
+
   const closeModal = () => {
     setModalOpen(false);
   };
@@ -131,7 +144,19 @@ const PostCard: React.FC<PostCardProps> = ({ post, onPostSelect }) => {
           </div>
         </div>
       </Card>
-      <PostModal isOpen={isModalOpen} onClose={closeModal} postContent={post} />
+      <PostModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        postContent={{
+          link: post.img,
+          description: post.description,
+          likes: post.likes,
+          date: new Date(post.date).toLocaleDateString(),
+          location: post.location,
+          category: post.category,
+          comments: post.comments,
+        }}
+      />
     </>
   );
 };
