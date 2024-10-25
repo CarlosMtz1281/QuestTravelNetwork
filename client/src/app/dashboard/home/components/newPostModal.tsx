@@ -58,22 +58,25 @@ const NewPostModal: React.FC<PostModalProps> = ({ isOpen, onClose }) => {
 
   const onSubmit = async (data: any) => {
     try {
-      const response = await fetch("http://localhost:5002/create_post", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userKey: "user001",
-          description: data.description,
-          likes: 0,
-          date: new Date().toISOString(),
-          location: data.location,
-          category: data.category,
-          link: data.imageUrl,
-          comments: [],
-        }),
-      });
+      const response = await fetch(
+        "https://quest-travel-network.vercel.app/create_post",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userKey: "user001",
+            description: data.description,
+            likes: 0,
+            date: new Date().toISOString(),
+            location: data.location,
+            category: data.category,
+            link: data.imageUrl,
+            comments: [],
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
