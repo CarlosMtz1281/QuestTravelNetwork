@@ -1,31 +1,76 @@
-'use client';
+'use client'
 
-import React from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import auth from "../../../firebase/config";
-import { GoogleAuthProvider, signInWithPopup, User as FirebaseUser, signOut } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, User as FirebaseUser, signOut, onAuthStateChanged } from "firebase/auth";
 import { usePathname, useRouter } from "next/navigation";
 
-// Define the UserContext type
-interface UserContextType {
-  user: FirebaseUser | null;  // Firebase's User type or null
-  signInWithGoogle: () => Promise<void>; // Function to sign in
-  handleLogout: () => Promise<void>; // Function to sign out
+interface User { 
+  email: string;
+  name: string;
+  lastName: string;
+  nacionality: string;
+  age: number;
+  userKey: string;
 }
 
-// Create the UserContext
-const UserContext = React.createContext<UserContextType | undefined>(undefined);
+interface UserContextType {
+  user: FirebaseUser | null;
+  userData: User | null;
+  signInWithGoogle: () => Promise<void>;
+  handleLogout: () => Promise<void>;
+}
 
-// Create a provider to wrap your app
+const UserContext = createContext<UserContextType | undefined>(undefined);
+
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [user, setUser] = React.useState<FirebaseUser | null>(null);
 
-  React.useEffect(() => {
-    const unsuscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUser(user);
-        // Redirigir el usuario al dashboard si este esta en la pagina de login o la intenta acceder
+  // Initialize state from session storage
+  const initialUser = typeof window !== "undefined" ? JSON.parse(sessionStorage.getItem("user") || "null") : null;
+  const initialUserData = typeof window !== "undefined" ? JSON.parse(sessionStorage.getItem("userData") || "null") : null;
+
+  const [user, setUser] = useState<FirebaseUser | null>(initialUser);
+  const [userData, setUserData] = useState<User | null>(initialUserData);
+
+  const fetchUserData = async (email: string) => {
+    try {
+      const response = await fetch("http://localhost:5002/validateUser", {
+        method: "GET",
+        headers: { email },
+      });
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      setUserData(data.data);
+      sessionStorage.setItem("userData", JSON.stringify(data.data));
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      setUserData(null);
+    }
+  };
+
+  useEffect(() => {
+    if (!user && initialUser) {
+      // Set the stored user if available
+      setUser(initialUser);
+    }
+
+    if (!userData && initialUserData) {
+      // Set the stored userData if available
+      setUserData(initialUserData);
+    }
+
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+        sessionStorage.setItem("user", JSON.stringify(currentUser));
+
+        // Fetch user data only if it's not in session storage
+        if (!initialUserData) {
+          fetchUserData(currentUser.email ?? "");
+        }
+
         if (pathname === "/login") {
           router.push("/dashboard");
         }
@@ -34,41 +79,57 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       }
     });
 
+    return () => unsubscribe();
+  }, [pathname, router]);
 
-    return () => unsuscribe();
-  }, []);
+  useEffect(() => {
+    // Update sessionStorage whenever userData changes
+    if (userData) {
+      sessionStorage.setItem("userData", JSON.stringify(userData));
+    }
+  }, [userData]);
+
+  useEffect(() => {
+    console.log("User:", user);
+    console.log("UserData:", userData);
+  });
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      setUser(null);
+      setUserData(null);
+      sessionStorage.clear();
       router.push("/login");
     } catch (error) {
       console.error("Error signing out", error);
     }
-  }
+  };
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: "select_account" });
     try {
-      await signInWithPopup(auth, provider);
+      const response = await signInWithPopup(auth, provider);
+      setUser(response.user);
+      sessionStorage.setItem("user", JSON.stringify(response.user));
+      await fetchUserData(response.user.email ?? "");
+      router.push("/dashboard");
     } catch (error) {
-      console.error(error);
+      console.error("Error during Google sign-in", error);
     }
   };
 
   return (
-    <UserContext.Provider value={{ user, signInWithGoogle, handleLogout }}>
+    <UserContext.Provider value={{ user, userData, signInWithGoogle, handleLogout }}>
       {children}
     </UserContext.Provider>
   );
 }
 
-// Custom hook to use the UserContext
+
 export const useUser = (): UserContextType => {
-  const context = React.useContext(UserContext);
-  if (!context) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
+  const context = useContext(UserContext);
+  if (!context) throw new Error("useUser must be used within a UserProvider");
   return context;
 };

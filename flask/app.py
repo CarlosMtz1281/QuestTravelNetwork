@@ -1,6 +1,8 @@
+import firebase_admin
+import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import firebase_admin
+from dotenv import load_dotenv
 from firebase_admin import credentials, firestore
 import os
 import google.generativeai as genai
@@ -10,6 +12,10 @@ from dateutil import parser
 import re
 
 
+
+# Cargar variables de entorno
+load_dotenv()
+
 # Initialize Flask app
 app = Flask(__name__)
 api_key = os.getenv('GOOGLE_GENAI_API_KEY')
@@ -17,13 +23,82 @@ print(os.getenv('GOOGLE_GENAI_API_KEY'))
 genai.configure(api_key=api_key)
 
 # Allow only requests from localhost:3000
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={r"/*": {"origins": "http://localhost:3001"}})
+
+env_vars = {
+    "type": os.getenv("TYPE"),
+    "project_id": os.getenv("PROJECT_ID"),
+    "private_key_id": os.getenv("PRIVATE_KEY_ID"),
+    "private_key": os.getenv("PRIVATE_KEY"),
+    "client_email": os.getenv("CLIENT_EMAIL"),
+    "client_id": os.getenv("CLIENT_ID"),
+    "auth_uri": os.getenv("AUTH_URI"),
+    "token_uri": os.getenv("TOKEN_URI"),
+    "auth_provider_x509_cert_url": os.getenv("AUTH_PROVIDER_X509_CERT_URL"),
+    "client_x509_cert_url": os.getenv("CLIENT_X509_CERT_URL"),
+    "universe_domain": os.getenv("UNIVERSE_DOMAIN")
+}
 
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate("key.json")  # Replace with your service account key file
+cred = credentials.Certificate(env_vars)  # Replace with your service account key file
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
+@app.route('/delete/plan', methods=['DELETE'])
+def delete_plan():
+    plan_id = request.headers.get('id')
+
+    if not plan_id:
+        return jsonify({"message": "ID not provided in headers"}), 404
+
+    try:
+        # Query Firestore to find the document with the specific 'id' field value
+        plans_ref = db.collection('plans')
+        query = plans_ref.where('id', '==', plan_id).stream()
+
+        # Iterate over the result and delete each document found (should be one)
+        found_plan = False
+        for plan in query:
+            plan.delete()  # This deletes the document
+            found_plan = True
+        
+        if found_plan:
+            return jsonify({"message": f"Plan with id {plan_id} deleted successfully"}), 200
+        else:
+            return jsonify({"message": "Plan not found"}), 404
+
+    except Exception as e:
+        print(f"Error fetching user data: {e}")
+        return jsonify({"message": "Error deleting plan", "error": str(e)}), 500
+        
+
+@app.route('/validateUser', methods=['GET'])
+def get_user_data():
+    email = request.headers.get('email')
+    
+    if not email:
+        return jsonify({"message": "email not provided in headers"}), 400
+    
+    try:
+        # Query Firestore for the user document
+        user_ref = db.collection('users').where('email', '==', email).stream()
+        print("Got user data")
+        # Check if a user with the given email exists
+        user_data = next(user_ref, None)
+
+        if user_data:
+            data = user_data.to_dict()
+            data.pop('email', None)
+            data.pop('password', None)            
+            # Return user data as a JSON response
+            return jsonify({"message": "Email found", "data": data}), 200
+        
+        else:
+            return jsonify({"message": "Email not found"}), 404
+        
+    except Exception as e:
+        print(f"Error fetching user data: {e}")
+        return jsonify({"message": "Error fetching user data", "error": str(e)}), 500
 
 # Route to fetch all users but exclude email and password
 @app.route('/users', methods=['GET'])
